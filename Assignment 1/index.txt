@@ -1,0 +1,30 @@
+Hamlet
+William Shakespeare
+a
+books/Hamlet.txt
+Hamlet.txt
+Heretics
+Gilbert K. Chesterton
+b
+books/Heretics.txt
+Heretics.txt
+Julius Caesar
+William Shakespeare
+c
+books/JuliusCaesar.txt
+JuliusCaesar.txt
+Uncle Tom’s Cabin
+Harriet Beecher Stowe
+de
+books/Uncle-Tom.txt
+Uncle-Tom.txt
+Moby Dick; or The Whale
+Herman Melville
+f
+books/moby-dick.txt
+moby-dick.txt
+Romeo and Juliet
+William Shakespeare
+e
+books/romeo-julliet.txt
+romeo-julliet.txt
