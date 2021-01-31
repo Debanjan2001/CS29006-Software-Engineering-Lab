@@ -6,11 +6,12 @@ using namespace std;
 
 class Book
 {
-    string title;
-    string author;
-    string type;
-    string path;
-    string filename;
+    protected:
+        string title;
+        string author;
+        string type;
+        string path;
+        string filename;
 
     public:
         Book();
@@ -26,20 +27,37 @@ class Book
         void set_filename(string book_name);
         void update_book_from_path(int base_len,string book_path);
         void copy_from_book(Book b);
+        friend ostream& operator <<(ostream& fout,Book& b);
+        friend istream& operator >>(ostream& fin,Book& b);
+
+
 };
 
 ostream& operator <<(ostream& fout,Book& b);
 istream& operator >>(istream& fin,Book &b);
 
+
+class Paragraph
+{
+    public :
+        string para; 
+};
+
+class Chapter
+{
+    public:
+        vector<Paragraph> chap; 
+};
+
 class Novel: public Book
 {
-    vector<string> chapter;
-    vector<vector<string>> paragraph;
-    public:
+    public :
+        vector<Chapter> chapters;
+
         Novel();
         Novel(Book b);
-        vector<string> get_chapters();
-        vector<vector<string>> get_paragraphs();
+        vector<Chapter> get_chapter();
+        Paragraph get_paragraph();
 };
 
 class Play: public Book

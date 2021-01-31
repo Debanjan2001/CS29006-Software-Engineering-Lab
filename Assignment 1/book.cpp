@@ -131,16 +131,55 @@ Novel::Novel(Book b)
     ifstream fin;
     fin.open(get_path().c_str());
 
+    regex chapter("CHAPTER");
+    string line="";
+
+    while(!fin.eof() && !regex_search(line,chapter))
+        getline(fin,line);
+
+    vector<Paragraph> ch;
+    Paragraph p;
+    p.para = "";
+
+
+    while(!fin.eof())
+    {   
+        getline(fin,line);
+        if(regex_search(line,chapter)==true && line[0]=='C')
+        {
+            Chapter newch;
+            newch.chap = ch; 
+            chapters.push_back(newch);
+            p.para = "";
+            ch.clear();
+        }
+        else
+            p.para += line;
+        if(line.length() == 0)
+        {
+            if(p.para.length()>0)
+                ch.push_back(p);
+            p.para = "";
+        }
+        
+    }
+
+    Chapter newch;
+    newch.chap = ch; 
+    chapters.push_back(newch);
+
     fin.close();
 }
 
-vector<string> Novel::get_chapters()
-{
-    return chapter;
-} 
+// Chapter Novel::get_chapters()
+// {
+//     return chapter;
+// } 
 
-vector<vector<string>> Novel::get_paragraphs()
-{
-    return paragraph;
-} 
+// Paragraph Novel::get_paragraphs()
+// {
+//     return paragraph;
+// } 
+
+
 

@@ -9,7 +9,7 @@ using namespace std;
 class Library
 {
     boost::filesystem::path base_dir;
-    vector<Book*> books;
+    vector<Book> books;
     public:
 
         Library()
@@ -74,42 +74,42 @@ class Library
                 if(previous_books.find(book_name) == previous_books.end())
                 {
                     cout<<"FOUND A NEW BOOK NAMED: "<< book_name <<endl;
-                    Book *new_book = new Book();
+                    Book new_book;
                     cout<<">> ENTER TYPE OF THE BOOK :"<<endl; 
                     string book_type;
                     cin>>book_type;
-                    new_book->set_type(book_type);
-                    new_book->set_filename(book_name);
-                    new_book->update_book_from_path(base_dir_len,base_dir.string()+"/"+book_name);
+                    new_book.set_type(book_type);
+                    new_book.set_filename(book_name);
+                    new_book.update_book_from_path(base_dir_len,base_dir.string()+"/"+book_name);
                     books.push_back(new_book);
                     
-                    fout<< *new_book;
+                    fout<< new_book;
                 }
                 else
                 {
-                    Book *b = new Book();
+                    Book b;
                     for(int i=0;i<old_books.size();i++)
                     {
                         if(old_books[i].get_filename()==book_name)
                         {
-                            *b = old_books[i];
+                            b = old_books[i];
                             break;
                         }
                     }
                     books.push_back(b);
-                    fout<< *b;
+                    fout<< b;
                 }
             }
 
             fout.close();
         }
 
-        void enumerate_book(Book *current,int i)
+        void enumerate_book(Book current,int i)
         {
             cout<<"Book Number: "<<i+1<<endl;
-            cout<<"Filename : "<<current->get_filename()<<endl;
-            cout<<"Title : "<<current->get_title()<<endl;
-            cout<<"Author : "<<current->get_author()<<endl;
+            cout<<"Filename : "<<current.get_filename()<<endl;
+            cout<<"Title : "<<current.get_title()<<endl;
+            cout<<"Author : "<<current.get_author()<<endl;
             cout<<endl;
         }
 
@@ -123,7 +123,7 @@ class Library
             }
             for(int i=0;i<books.size();i++)
             {
-                Book *current = books[i];
+                Book current = books[i];
                 enumerate_book(current,i);
             }
         }
@@ -135,7 +135,7 @@ class Library
             cout<<">> ";
             int input;
             cin>>input;
-            vector<pair<Book*,int>> queryset;
+            vector<pair<Book,int>> queryset;
             if(input==1)
             {
                 cout<<">> ENTER TITLE: ";
@@ -144,7 +144,7 @@ class Library
                 regex r(book_title,regex::icase);
                 for(int i=0;i<books.size();i++)
                 {
-                    if( regex_search(books[i]->get_title(),r ))
+                    if( regex_search(books[i].get_title(),r ))
                     {
                         queryset.push_back({books[i],i});
                     }
@@ -158,7 +158,7 @@ class Library
                 regex r(book_author,regex::icase);
                 for(int i=0;i<books.size();i++)
                 {
-                    if( regex_search(books[i]->get_author(),r ))
+                    if( regex_search(books[i].get_author(),r ))
                     {
                         queryset.push_back({books[i],i});
                     }
@@ -230,9 +230,9 @@ class Library
                 return;
             }
 
-            Book *b = books[id-1];
+            Book b = books[id-1];
             ifstream fin;
-            fin.open(b->get_path().c_str());
+            fin.open(b.get_path().c_str());
 
             vector<string> pages;
 
@@ -278,7 +278,43 @@ class Library
 
         void analytics(int id)
         {
+            Book b = books[id-1];
 
+            string type = b.get_type();
+            ifstream fin;
+            fin.open(b.get_path().c_str());
+
+            if(type[0] == 'n' || type[0] == 'N')
+            {
+                Novel curr = Novel(b);
+                ofstream fout;
+                fout.open("output.txt");
+                for(int i=0;i<curr.chapters.size();i++)
+                {
+                    fout<<"CHAPTER" <<i +1<<endl;
+                    for(int j=0;j<curr.chapters[i].chap.size();j++)
+                    {
+                        fout<<"PARAGRAPH "<<j+1<<endl<<endl;;
+                        fout<<curr.chapters[i].chap[j].para<<endl<<endl;;
+                    }
+                    cout<<endl;
+                }
+
+
+                cout<<">> ENTER A WORD: ";
+                string word;
+                cin>>word;
+                int k;
+                cout<<">> ENTER K for TOP-K ANALYTICS: ";
+                cin>>k;
+
+
+
+            }
+            else if(type[0] == 'p' || type[0] == 'P')
+            {
+
+            }
         }
 
         ~Library()
