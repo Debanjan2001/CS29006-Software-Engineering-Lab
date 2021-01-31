@@ -174,6 +174,11 @@ Novel::Novel(Book b)
     fin.close();
 }
 
+Play::Play(Book b)
+{
+    copy_from_book(b);
+}
+
 
 
 

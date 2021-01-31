@@ -36,7 +36,6 @@ class Book
 ostream& operator <<(ostream& fout,Book& b);
 istream& operator >>(istream& fin,Book &b);
 
-
 class Paragraph
 {
     public :
@@ -59,9 +58,24 @@ class Novel: public Book
         Novel(Book b);
 };
 
+class Scene
+{
+    public:
+        vector<string> scene;
+};
+
+class Act
+{
+    public :
+        vector<Scene> act;
+};
+
 class Play: public Book
 {
-
+    public:
+        vector<Act> acts;
+        Play();
+        Play(Book b);
 };
 
 #endif

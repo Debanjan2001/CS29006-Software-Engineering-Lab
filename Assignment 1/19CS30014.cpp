@@ -351,7 +351,7 @@ class Library
                 for(set<pair<int,int>>::reverse_iterator it=query_chap.rbegin();it!=query_chap.rend(); ++it)
                 {
                     int id = it->second;
-                    cout<<"   "<<curr.chapters[id].name<<" "<<" : "<<word<<" APPEARED "<<it->first<<" TIMES "<<"\n";
+                    cout<<"   "<<curr.chapters[id].name<<" "<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n";
                 }
                 cout<<endl;
 
@@ -360,7 +360,7 @@ class Library
                 for(set<pair<int,pair<int,int>>>::reverse_iterator it=query_para.rbegin();it!=query_para.rend(); ++it)
                 {
                     int i= (it->second).first,j = (it->second).second;
-                    cout<<"   PARAGRAPH "<<j<<" FROM CHAPTER "<<i<<" : "<<word<<" APPEARED "<<it->first<<" TIMES "<<"\n\n";
+                    cout<<"   PARAGRAPH "<<j<<" FROM CHAPTER "<<i<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n\n";
                     cout<<curr.chapters[i].chap[j].para<<endl<<endl;
                 }
 
