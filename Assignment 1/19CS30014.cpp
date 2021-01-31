@@ -75,7 +75,7 @@ class Library
                 {
                     cout<<"FOUND A NEW BOOK NAMED: "<< book_name <<endl;
                     Book new_book;
-                    cout<<">> ENTER TYPE OF THE BOOK :"<<endl; 
+                    cout<<">> ENTER TYPE OF THE BOOK :"; 
                     string book_type;
                     cin>>book_type;
                     new_book.set_type(book_type);
@@ -278,6 +278,9 @@ class Library
 
         void analytics(int id)
         {
+            if(id<=0)
+                return;
+
             Book b = books[id-1];
 
             string type = b.get_type();
@@ -287,21 +290,7 @@ class Library
             if(type[0] == 'n' || type[0] == 'N')
             {
                 Novel curr = Novel(b);
-
-                // ofstream fout;
-                // fout.open("output.txt");
-                // for(int i=0;i<curr.chapters.size();i++)
-                // {
-                //     fout<<"CHAPTER" <<i +1<<endl;
-                //     for(int j=0;j<curr.chapters[i].chap.size();j++)
-                //     {
-                //         fout<<"PARAGRAPH "<<j+1<<endl<<endl;;
-                //         fout<<curr.chapters[i].chap[j].para<<endl<<endl;;
-                //     }
-                //     fout<<endl;
-                // }
-
-                cout<<">> ENTER A WORD: ";
+                cout<<">> ENTER A WORD TO ANALYSE: ";
                 string word;
                 cin>>word;
                 regex r(word,regex::icase);
@@ -324,7 +313,7 @@ class Library
                         {
                             string subs;
                             iss >> subs;
-                            if(regex_match(subs,r))
+                            if(regex_search(subs,r))
                             {
                                 word_count++;
                             }
@@ -347,28 +336,93 @@ class Library
                     }
                 }
 
-                cout<<"TOP "<<k<<" CHAPTERS BASED ON YOUR WORD: "<<endl<<endl;
-                for(set<pair<int,int>>::reverse_iterator it=query_chap.rbegin();it!=query_chap.rend(); ++it)
-                {
-                    int id = it->second;
-                    cout<<"   "<<curr.chapters[id].name<<" "<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n";
-                }
-                cout<<endl;
+                int input = 0;
+                
 
-                cout<<"TOP "<<k<<" PARAGRAPHS BASED ON YOUR WORD: "<<endl<<endl;
+                while(input!=-1)
+                {       
+                    cout<<"ENTER 1 TO SEE TOP "<<k<<" CHAPTERS CONTAINING THE WORD: \""<<word<<"\""<<endl;
+                    cout<<"ENTER 2 TO SEE TOP "<<k<<" PARAGRAPHS CONTAINING THE WORD: \""<<word<<"\""<<endl;
+                    cout<<"ENTER -1 TO EXIT"<<endl;
+                    cout<<">> ";
+                    cin>>input;         
+                    if(input == 1)
+                    {
+                        cout<<"TOP "<<k<<" CHAPTERS BASED ON YOUR WORD: "<<endl<<endl;
+                        for(set<pair<int,int>>::reverse_iterator it=query_chap.rbegin();it!=query_chap.rend(); ++it)
+                        {
+                            int id = it->second;
+                            cout<<"   "<<curr.chapters[id].name<<" "<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n";
+                        }
+                        cout<<endl;
+                    }
+                    else if(input == 2)
+                    {
+                        cout<<"TOP "<<k<<" PARAGRAPHS BASED ON YOUR WORD: "<<endl<<endl;
 
-                for(set<pair<int,pair<int,int>>>::reverse_iterator it=query_para.rbegin();it!=query_para.rend(); ++it)
-                {
-                    int i= (it->second).first,j = (it->second).second;
-                    cout<<"   PARAGRAPH "<<j<<" FROM CHAPTER "<<i<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n\n";
-                    cout<<curr.chapters[i].chap[j].para<<endl<<endl;
+                        for(set<pair<int,pair<int,int>>>::reverse_iterator it=query_para.rbegin();it!=query_para.rend(); ++it)
+                        {
+                            int i= (it->second).first,j = (it->second).second;
+                            cout<<"**************************************************************"<<endl;
+                            cout<<"PARAGRAPH "<<j<<" FROM CHAPTER "<<i<<" : \""<<word<<"\" APPEARED "<<it->first<<" TIMES "<<"\n";
+                            cout<<"**************************************************************"<<endl;
+                            cout<<curr.chapters[i].chap[j].para<<endl<<endl;
+                        }
+                    }
                 }
 
             }
             else if(type[0] == 'p' || type[0] == 'P')
             {
+                Play curr = Play(b);
+                string character;
+                cout<<">> ENTER NAME OF A CHARACTER: ";
+                cin>>character;
+                
+                for(int i=0;i<character.length();i++)
+                {
+                    character[i] = toupper(character[i]);
+                }
+
+                set<string> query;
+                string line ="";
+
+                for(int i=0;i<curr.acts.size();i++)
+                {
+                    for(int j=0;j<curr.acts[i].act.size();j++)
+                    {
+                        string str = curr.acts[i].act[j].scene;
+                        istringstream iss(str);
+                        set<string> st;
+                        do{
+                            getline(iss,line);
+                            if(line.size()>1 && line[0]>='A' && line[0]<='Z' && line[1]>='A' && line[1]<='Z')
+                            {
+                                st.insert(string(line.begin(),line.end()-1));
+                            }
+                            
+                        }while(iss);
+
+                        if(st.find(character)!=st.end())
+                        {
+                            st.erase(character);
+                            for(set<string>::iterator it =st.begin();it!=st.end();it++)
+                            {
+                                query.insert(*it);
+                            }
+                        }
+                    }
+                }
+
+                cout<<"A LIST OF ALL OTHER CHARACTERS WHO APPEAR IN AT LEAST ONE SCENE WITH : "<<character<<endl; 
+                for(set<string>::iterator it =query.begin();it!=query.end();it++)
+                {
+                    cout<<"   "<<*it<<endl;
+                }
 
             }
+
+            fin.close();
         }
 
         ~Library()

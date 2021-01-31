@@ -28,13 +28,8 @@ class Book
         void update_book_from_path(int base_len,string book_path);
         void copy_from_book(Book b);
         friend ostream& operator <<(ostream& fout,Book& b);
-        friend istream& operator >>(ostream& fin,Book& b);
-
-
+        friend istream& operator >>(istream& fin,Book& b);
 };
-
-ostream& operator <<(ostream& fout,Book& b);
-istream& operator >>(istream& fin,Book &b);
 
 class Paragraph
 {
@@ -61,7 +56,7 @@ class Novel: public Book
 class Scene
 {
     public:
-        vector<string> scene;
+        string scene;
 };
 
 class Act
@@ -76,6 +71,7 @@ class Play: public Book
         vector<Act> acts;
         Play();
         Play(Book b);
+
 };
 
 #endif

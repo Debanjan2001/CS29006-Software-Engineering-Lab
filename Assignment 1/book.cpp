@@ -12,7 +12,6 @@ Book::Book()
     filename = "";
 }
 
-
 string Book::get_type()
 {
     return type;
@@ -129,7 +128,7 @@ Novel::Novel(Book b)
 {
     copy_from_book(b);
     ifstream fin;
-    fin.open(get_path().c_str());
+    fin.open(b.get_path().c_str());
 
     regex chapter("CHAPTER");
     string line="";
@@ -177,6 +176,48 @@ Novel::Novel(Book b)
 Play::Play(Book b)
 {
     copy_from_book(b);
+    ifstream fin;
+    fin.open(b.get_path().c_str());
+    
+    regex r("ACT");
+    regex sc("SCENE");
+    string line = "";
+
+    while(!fin.eof() && !regex_search(line,r))
+        getline(fin,line);
+    while(!fin.eof() && !regex_search(line,sc))
+        getline(fin,line);
+
+    vector<Scene> ac;
+    Scene s;
+    s.scene = "";
+
+    while(!fin.eof())
+    {   
+        getline(fin,line);
+        if(regex_search(line,sc)==true && line[0]=='S')
+        {
+            ac.push_back(s);
+            s.scene="";
+        }
+        else if(regex_search(line,r)==true && line[0]=='A')
+        {
+            Act newac;
+            newac.act = ac; 
+            acts.push_back(newac);
+            s.scene="";
+            ac.clear();
+        }
+        else
+            s.scene += (line + "\n");
+    }
+
+    ac.push_back(s);
+    Act newac;
+    newac.act = ac; 
+    acts.push_back(newac);
+
+    fin.close();
 }
 
 
