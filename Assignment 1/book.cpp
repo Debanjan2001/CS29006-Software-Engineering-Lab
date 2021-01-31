@@ -137,6 +137,7 @@ Novel::Novel(Book b)
     while(!fin.eof() && !regex_search(line,chapter))
         getline(fin,line);
 
+    string chapter_name = line; 
     vector<Paragraph> ch;
     Paragraph p;
     p.para = "";
@@ -148,10 +149,12 @@ Novel::Novel(Book b)
         if(regex_search(line,chapter)==true && line[0]=='C')
         {
             Chapter newch;
+            newch.name = chapter_name;
             newch.chap = ch; 
             chapters.push_back(newch);
             p.para = "";
             ch.clear();
+            chapter_name = line;
         }
         else
             p.para += line;
@@ -161,25 +164,16 @@ Novel::Novel(Book b)
                 ch.push_back(p);
             p.para = "";
         }
-        
     }
 
     Chapter newch;
+    newch.name = chapter_name;
     newch.chap = ch; 
     chapters.push_back(newch);
 
     fin.close();
 }
 
-// Chapter Novel::get_chapters()
-// {
-//     return chapter;
-// } 
-
-// Paragraph Novel::get_paragraphs()
-// {
-//     return paragraph;
-// } 
 
 
 

@@ -46,6 +46,7 @@ class Paragraph
 class Chapter
 {
     public:
+        string name;
         vector<Paragraph> chap; 
 };
 
@@ -56,8 +57,6 @@ class Novel: public Book
 
         Novel();
         Novel(Book b);
-        vector<Chapter> get_chapter();
-        Paragraph get_paragraph();
 };
 
 class Play: public Book

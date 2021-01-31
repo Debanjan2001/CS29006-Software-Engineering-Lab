@@ -1,11 +1,11 @@
 Hamlet
 William Shakespeare
-novel
+play
 books/Hamlet.txt
 Hamlet.txt
 Heretics
 Gilbert K. Chesterton
-novel
+play
 books/Heretics.txt
 Heretics.txt
 Julius Caesar

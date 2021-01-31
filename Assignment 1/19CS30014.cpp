@@ -287,28 +287,82 @@ class Library
             if(type[0] == 'n' || type[0] == 'N')
             {
                 Novel curr = Novel(b);
-                ofstream fout;
-                fout.open("output.txt");
-                for(int i=0;i<curr.chapters.size();i++)
-                {
-                    fout<<"CHAPTER" <<i +1<<endl;
-                    for(int j=0;j<curr.chapters[i].chap.size();j++)
-                    {
-                        fout<<"PARAGRAPH "<<j+1<<endl<<endl;;
-                        fout<<curr.chapters[i].chap[j].para<<endl<<endl;;
-                    }
-                    cout<<endl;
-                }
 
+                // ofstream fout;
+                // fout.open("output.txt");
+                // for(int i=0;i<curr.chapters.size();i++)
+                // {
+                //     fout<<"CHAPTER" <<i +1<<endl;
+                //     for(int j=0;j<curr.chapters[i].chap.size();j++)
+                //     {
+                //         fout<<"PARAGRAPH "<<j+1<<endl<<endl;;
+                //         fout<<curr.chapters[i].chap[j].para<<endl<<endl;;
+                //     }
+                //     fout<<endl;
+                // }
 
                 cout<<">> ENTER A WORD: ";
                 string word;
                 cin>>word;
+                regex r(word,regex::icase);
                 int k;
-                cout<<">> ENTER K for TOP-K ANALYTICS: ";
+                cout<<">> ENTER VALUE OF K for TOP-K ANALYTICS: ";
                 cin>>k;
 
+                set<pair<int,int>> query_chap;
+                set<pair<int,pair<int,int>>> query_para;
+                
+                for(int i=0;i<curr.chapters.size();i++)
+                {
+                    int tot_count = 0;
+                    for(int j=0;j<curr.chapters[i].chap.size();j++)
+                    {
+                        string str = curr.chapters[i].chap[j].para;
+                        int word_count = 0;
+                        istringstream iss(str);
+                        do
+                        {
+                            string subs;
+                            iss >> subs;
+                            if(regex_match(subs,r))
+                            {
+                                word_count++;
+                            }
+                        } while (iss);
 
+                        query_para.insert({word_count,{i,j}});
+
+                        if(query_para.size()>k)
+                        {
+                            query_para.erase(query_para.begin());
+                        }
+                        
+                        tot_count += word_count;
+                    }
+
+                    query_chap.insert({tot_count,i});
+                    if(query_chap.size()>k)
+                    {
+                        query_chap.erase(query_chap.begin());
+                    }
+                }
+
+                cout<<"TOP "<<k<<" CHAPTERS BASED ON YOUR WORD: "<<endl<<endl;
+                for(set<pair<int,int>>::reverse_iterator it=query_chap.rbegin();it!=query_chap.rend(); ++it)
+                {
+                    int id = it->second;
+                    cout<<"   "<<curr.chapters[id].name<<" "<<" : "<<word<<" APPEARED "<<it->first<<" TIMES "<<"\n";
+                }
+                cout<<endl;
+
+                cout<<"TOP "<<k<<" PARAGRAPHS BASED ON YOUR WORD: "<<endl<<endl;
+
+                for(set<pair<int,pair<int,int>>>::reverse_iterator it=query_para.rbegin();it!=query_para.rend(); ++it)
+                {
+                    int i= (it->second).first,j = (it->second).second;
+                    cout<<"   PARAGRAPH "<<j<<" FROM CHAPTER "<<i<<" : "<<word<<" APPEARED "<<it->first<<" TIMES "<<"\n\n";
+                    cout<<curr.chapters[i].chap[j].para<<endl<<endl;
+                }
 
             }
             else if(type[0] == 'p' || type[0] == 'P')
@@ -359,7 +413,7 @@ int main()
         else if(input == 4)
         {
              lib.list_all_books();
-            cout<<"ENTER THE BOOK NUMBER OF THE BOOK FOR PERFORMING ANALYTICS"<<endl;
+            cout<<">> ENTER THE BOOK NUMBER OF THE BOOK FOR PERFORMING ANALYTICS: ";
             int book_num;
             cin>>book_num;
             lib.analytics(book_num);
