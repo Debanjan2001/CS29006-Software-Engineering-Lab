@@ -25,7 +25,7 @@ class Library
             cout<<"ENTER 1 TO SEE LIST OF ALL BOOKS"<<endl;
             cout<<"ENTER 2 TO SEARCH FOR SOME BOOK"<<endl;
             cout<<"ENTER 3 TO READ A BOOK"<<endl;
-            cout<<"ENTER 4 FOR ANALYTICS"<<endl;
+            cout<<"ENTER 4 FOR PERFORMING ANALYTICS"<<endl;
             cout<<"ENTER -1 TO EXIT THIS LIBRARY"<<endl;
         }
 
@@ -183,31 +183,41 @@ class Library
                 return;
             }
 
-            cout<<"DO YOU WANT TO SEE ANY OF THE ABOVE BOOKS?"<<endl;
-            cout<<"ENTER THE BOOK NUMBER TO SEE THE BOOK \nOTHERWISE ENTER -1 IF YOU DONT WANT TO SEE ANY BOOK."<<endl;
-            cout<<">> ";
-            cin>>input;
+            input = 100;
 
             while(input!=-1)
             {
-                display_book(input);
-                cout<<"DO YOU WANT TO SEE ANOTHER BOOK FROM THAT LIST?"<<endl;
-                cout<<"ENTER Y/N (YES/NO):"<<endl;
-                string choice;
-                cin>>choice;
-                if(choice[0]=='y' || choice[0]=='Y')
+                cout<<"DO YOU WANT TO READ OR ANALYSE ANY OF THE BOOKS FOUND IN YOUR SEARCH?"<<endl;
+                cout<<"ENTER 1 TO READ A BOOK"<<endl;
+                cout<<"ENTER 2 TO ANALYSE A BOOK"<<endl;
+                cout<<"ENTER -1 TO EXIT FROM HERE"<<endl;
+
+                cout<<">> ";
+                cin>>input;
+
+                if(input == -1)
+                    break;
+
+                cout<<"HERE ARE THE BOOKS"<<endl;
+                for(int i=0;i<queryset.size();i++)
                 {
-                    cout<<"HERE ARE THE BOOKS"<<endl;
-                    for(int i=0;i<queryset.size();i++)
-                    {
-                        enumerate_book(queryset[i].first,queryset[i].second);
-                    }
-                    cout<<">> ENTER BOOK NUMBER: ";
-                    cin>>input;
+                    enumerate_book(queryset[i].first,queryset[i].second);
                 }
+                cout<<">> ENTER BOOK NUMBER ";
+                if(input ==1)
+                    cout<<"TO READ IT: ";
                 else
+                    cout<<"TO PERFORM ANALYTICS: ";
+                int book_num;
+                cin>>book_num;
+                
+                if(input == 1)
                 {
-                    return;
+                    display_book(book_num);
+                }
+                else if(input == 2)
+                {
+                    analytics(book_num);   
                 }
             }
         }
@@ -266,6 +276,11 @@ class Library
             }
         }
 
+        void analytics(int id)
+        {
+
+        }
+
         ~Library()
         {
             for(int i=0;i<books.size();i++)
@@ -304,6 +319,14 @@ int main()
             int book_num;
             cin>>book_num;
             lib.display_book(book_num);
+        }
+        else if(input == 4)
+        {
+             lib.list_all_books();
+            cout<<"ENTER THE BOOK NUMBER OF THE BOOK FOR PERFORMING ANALYTICS"<<endl;
+            int book_num;
+            cin>>book_num;
+            lib.analytics(book_num);
         }
     }
 
