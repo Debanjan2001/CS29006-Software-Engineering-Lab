@@ -14,7 +14,8 @@ class Library
 
         Library()
         {
-            cout<<">> Enter name of directory containing the books:";
+            cout<<"TO CREATE THE LIBRARY YOU NEED TO PROVIDE A DIRECTORY CONTAINING THE BOOKS..."<<endl;
+            cout<<">> ENTER NAME OF THE DIRECTORY CONTAINING THE BOOKS: ";
             cin>>base_dir;
         }
 
@@ -102,6 +103,8 @@ class Library
             }
 
             fout.close();
+
+            cout<<"SUCCESSFULLY CREATED AND UPDATED THE LIBRARY...\n"<<endl;
         }
 
         void enumerate_book(Book current,int i)
@@ -155,6 +158,7 @@ class Library
                 cout<<">> ENTER AUTHOR'S NAME: ";
                 string book_author;
                 cin>>book_author;
+
                 regex r(book_author,regex::icase);
                 for(int i=0;i<books.size();i++)
                 {
@@ -229,6 +233,8 @@ class Library
                 cout<<"NO BOOKS AVAILABLE!"<<endl;
                 return;
             }
+            if(id<0)
+                return;
 
             Book b = books[id-1];
             ifstream fin;
@@ -301,9 +307,10 @@ class Library
                 set<pair<int,int>> query_chap;
                 set<pair<int,pair<int,int>>> query_para;
                 
+                int tot_count = 0;
+
                 for(int i=0;i<curr.chapters.size();i++)
                 {
-                    int tot_count = 0;
                     for(int j=0;j<curr.chapters[i].chap.size();j++)
                     {
                         string str = curr.chapters[i].chap[j].para;
@@ -336,6 +343,11 @@ class Library
                     }
                 }
 
+                if(tot_count == 0)
+                {
+                    cout<<"NO SUCH WORD FOUND..."<<endl;
+                    return;
+                }
                 int input = 0;
                 
 
@@ -414,10 +426,17 @@ class Library
                     }
                 }
 
+                if(query.size()==0)
+                {
+                    cout<<"NO CHARACTED NAMED \""<<character<<"\" FOUND IN THIS BOOK ! "<<endl;
+                    return;
+                }
+
                 cout<<"A LIST OF ALL OTHER CHARACTERS WHO APPEAR IN AT LEAST ONE SCENE WITH : "<<character<<endl; 
+                int count = 0;
                 for(set<string>::iterator it =query.begin();it!=query.end();it++)
                 {
-                    cout<<"   "<<*it<<endl;
+                    cout<<"   "<<(++count)<<". "<<*it<<endl;
                 }
 
             }
@@ -459,7 +478,7 @@ int main()
         else if(input == 3)
         {
             lib.list_all_books();
-            cout<<"ENTER THE BOOK NUMBER WHICH YOU WANT TO READ"<<endl;
+            cout<<">> ENTER THE BOOK NUMBER WHICH YOU WANT TO READ"<<endl;
             int book_num;
             cin>>book_num;
             lib.display_book(book_num);
