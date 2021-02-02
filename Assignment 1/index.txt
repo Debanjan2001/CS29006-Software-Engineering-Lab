@@ -1,0 +1,10 @@
+Moby Dick; or The Whale
+Herman Melville
+novel
+books/moby-dick.txt
+moby-dick.txt
+Romeo and Juliet
+William Shakespeare
+play
+books/romeo-julliet.txt
+romeo-julliet.txt

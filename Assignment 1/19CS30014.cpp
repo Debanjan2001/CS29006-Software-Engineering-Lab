@@ -258,7 +258,7 @@ class Library
             
             int pagenum=0;
             system("clear");
-            cout<<pages[pagenum]<<endl;
+            cout<<pages[pagenum]<<endl<<endl;
             while(inp!="Q" || inp!="q")
             {
                 cout<<"PRESS Q TO QUIT READING"<<endl;
@@ -278,7 +278,7 @@ class Library
 
                 system("clear");
 
-                cout<<pages[pagenum]<<endl;
+                cout<<pages[pagenum]<<endl<<endl;
             }
         }
 
@@ -478,7 +478,7 @@ int main()
         else if(input == 3)
         {
             lib.list_all_books();
-            cout<<">> ENTER THE BOOK NUMBER WHICH YOU WANT TO READ"<<endl;
+            cout<<">> ENTER THE BOOK NUMBER WHICH YOU WANT TO READ :";
             int book_num;
             cin>>book_num;
             lib.display_book(book_num);
