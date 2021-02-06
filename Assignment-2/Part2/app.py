@@ -1,33 +1,33 @@
-class User():
-    def __init__(self,userid=None,contact_list = None):
-        self.userid = userid
-        self.contact_list = contact_list
-        self.messages = []
+# class User():
+#     def __init__(self,userid=None,contact_list = None):
+#         self.userid = userid
+#         self.contact_list = contact_list
+#         self.messages = []
 
-    def get_userid(self):
-        return self.userid
+#     def get_userid(self):
+#         return self.userid
 
-    def get_contact_list(self):
-        return self.contact_list
+#     def get_contact_list(self):
+#         return self.contact_list
     
-    def add_message(self,post):
-        self.messages.append(post)
+#     def add_message(self,post):
+#         self.messages.append(post)
 
 
-class Group():
-    def __init__(self,groupid=None,member_list = None):
-        self.groupid = groupid
-        self.member_list = member_list
-        self.messages = []
+# class Group():
+#     def __init__(self,groupid=None,member_list = None):
+#         self.groupid = groupid
+#         self.member_list = member_list
+#         self.messages = []
     
-    def get_groupid(self):
-        return self.groupid
+#     def get_groupid(self):
+#         return self.groupid
 
-    def get_member_list(self):
-        return self.member_list
+#     def get_member_list(self):
+#         return self.member_list
 
-    def add_message(self,post):
-        self.messages.append(post)
+#     def add_message(self,post):
+#         self.messages.append(post)
         
 
 def read_file():
@@ -35,8 +35,8 @@ def read_file():
     file = open("social_network.txt",'r')
     # print("File name: "+file.name)
     hash_cnt = 0
-    user_list= []
-    group_list = []
+    user_dict= {}
+    group_dict = {}
 
     for line in file:
         # print(line)
@@ -57,8 +57,7 @@ def read_file():
                 for contact in line[1]:
                     contact_list.append(contact)
 
-                user = User(userid=userid,contact_list=contact_list)
-                user_list.append(user)
+                user_dict[userid] = contact_list
 
             else:
                 line[1] = line[1].split(',')
@@ -67,11 +66,10 @@ def read_file():
                 for member in line[1]:
                     member_list.append(member)
 
-                group = Group(groupid=groupid,member_list=member_list)
-                group_list.append(group)
+                group_dict[groupid]=member_list
             
     file.close()
-    return (user_list,group_list)
+    return (user_dict,group_dict)
 
     # for group in group_list:
     #     print( group.get_groupid())
@@ -93,7 +91,7 @@ class Welcome(Frame):
         super().__init__(master,background="thistle4")
         self.master = master
         self.grid(row=0,column=0,sticky="nsew")
-        self.label = Label(self,text= "WELCOME TO PYTHON SOCIAL NETWORKING APP",font=app_font)
+        self.label = Label(self,bg="thistle4",text= "WELCOME TO PYTHON SOCIAL NETWORKING APP",font=("Helvetica",16))
         self.label.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 
@@ -102,11 +100,12 @@ class UserMenu(Frame):
         super().__init__(master)
         self.master = master
         self.grid(row=1,column=0,sticky="nsew")
+        self.userid = ""
 
         self.select_user_label = Label(self,text="Please select a user :",font = app_font)
         self.select_user_label.grid(row=0,column=0)
 
-        self.options = [ user.get_userid() for user in data[0] ]
+        self.options = [ userid for userid in data[0] ]
         self.clicked = StringVar() 
         self.clicked.set("None Selected")
 
@@ -128,17 +127,22 @@ class UserMenu(Frame):
     def show(self,event): 
         s = self.clicked.get()
         self.user.config(text = s)
+        self.userid = s
+
+    def get_userid(self):
+        return self.userid
 
 class Features(Frame):
-    def __init__(self,master=None):
+    def __init__(self,master=None,display = None):
         super().__init__(master)
         self.master = master
+        self.display = display
         self.grid(row=2,sticky="ew",pady=(0,0))
 
         grid_config_dict = {'row':0,'padx':0,'pady':(0,0),'sticky':"nsew"}
         self.button1 = Button(self,text="Incoming Messages",font=app_font)
         self.button1.grid(grid_config_dict,column=0)
-        self.button2 = Button(self,text="Your Contacts",font=app_font)
+        self.button2 = Button(self,text="Your Contacts",font=app_font,command=self.display.get_contacts)
         self.button2.grid(grid_config_dict,column=1)
         self.button3 = Button(self,text="Your Groups",font=app_font)
         self.button3.grid(grid_config_dict,column=2)
@@ -151,11 +155,25 @@ class Features(Frame):
         self.grid_columnconfigure(3,weight=1)
 
 class Display(Frame):
-    def __init__(self,master=None):
+    def __init__(self,master=None,usermenu=None):
         super().__init__(master,background="cyan")
         self.master = master
         self.grid(row=3,column=0,sticky="nsew")
+        self.usermenu = usermenu
 
+        self.label = Label(self,text="")
+        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
+
+    def get_contacts(self):
+        userid = self.usermenu.get_userid()
+        s = ""   
+        for contact in data[0][userid]:
+            s += (contact + "\n")
+        self.label.config(text=s)
+        
+
+    def get_commands(self):
+        return [self.get_contacts]
 
 
 
@@ -181,8 +199,8 @@ class App(Frame):
 
         self.welcome = Welcome(self.master)
         self.usermenu = UserMenu(self.master)
-        self.features = Features(self.master)
-        self.display = Display(self.master)
+        self.display = Display(self.master,self.usermenu)
+        self.features = Features(self.master,self.display)
 
 app = App(root)
 # # root.config(menu=app.menubar.user_menubar)
