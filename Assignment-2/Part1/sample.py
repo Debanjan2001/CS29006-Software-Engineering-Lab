@@ -37,8 +37,11 @@ class LeftFrame(Frame):
         self.ubound = Text(self,height=2,width=20,font=app_font)
         self.ubound.grid(row=3,column=1,padx = 5,pady = 20)
 
-        self.button = Button(self,text = "Create Plot",command=self.draw_plot,font=app_font,fg="white",bg="black",highlightcolor="white",highlightthickness=4,highlightbackground="purple1",padx=5,pady=5)
-        self.button.grid(row=4,column=0,padx=15,pady=20,columnspan=2)  
+        self.plot_button = Button(self,text = "Create Plot",command=self.draw_plot,font=app_font,fg="white",bg="black",highlightcolor="white",highlightthickness=4,highlightbackground="purple1",padx=5,pady=5)
+        self.plot_button.grid(row=4,column=0,padx=15,pady=20,columnspan=1)  
+
+        self.exit_button = Button(self,text = "Exit",command=exit,font=app_font,fg="white",bg="black",highlightcolor="white",highlightthickness=4,highlightbackground="purple1",padx=5,pady=5)
+        self.exit_button.grid(row=4,column=1,padx=15,pady=20,columnspan=1)  
 
 
     def draw_plot(self):
