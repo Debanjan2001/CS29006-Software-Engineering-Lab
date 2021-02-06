@@ -1,27 +1,3 @@
-# from tkinter import *
-import os
-# root = Tk()
-
-
-
-       
-        
-# class App(Frame):
-#     def __init__(self,master = None):
-#         super().__init__(master)
-#         self.master = master
-
-#         self.menubar = Menu(self.master)
-#         self.usermenu = Menu(self.menubar, tearoff=0)
-#         self.usermenu.add_command(label="Select User")
-#         self.menubar.add_cascade(label="Select User", menu=self.usermenu)
-#         self.master.config(menu=self.menubar)
-
-
-# app = App(root)
-# # root.config(menu=app.menubar.user_menubar)
-# root.mainloop()
-
 class User():
     def __init__(self,userid=None,contact_list = None):
         self.userid = userid
@@ -53,8 +29,6 @@ class Group():
     def add_message(self,post):
         self.messages.append(post)
         
-
-# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def read_file():
 
@@ -97,12 +71,125 @@ def read_file():
                 group_list.append(group)
             
     file.close()
+    return (user_list,group_list)
 
     # for group in group_list:
     #     print( group.get_groupid())
     #     for y in group.get_member_list():
     #         print(y+", ",end='')
     #     print()
+    
+from tkinter import *
+
+from matplotlib.pyplot import text 
+root = Tk()
+app_font = ("Helvetica",13)
+
+data = read_file()
+
+
+class Welcome(Frame):
+     def __init__(self,master=None):
+        super().__init__(master,background="thistle4")
+        self.master = master
+        self.grid(row=0,column=0,sticky="nsew")
+        self.label = Label(self,text= "WELCOME TO PYTHON SOCIAL NETWORKING APP",font=app_font)
+        self.label.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+
+class UserMenu(Frame):
+    def __init__(self,master=None):
+        super().__init__(master)
+        self.master = master
+        self.grid(row=1,column=0,sticky="nsew")
+
+        self.select_user_label = Label(self,text="Please select a user :",font = app_font)
+        self.select_user_label.grid(row=0,column=0)
+
+        self.options = [ user.get_userid() for user in data[0] ]
+        self.clicked = StringVar() 
+        self.clicked.set("None Selected")
+
+        self.drop = OptionMenu( self, self.clicked ,*self.options ,command=self.show) 
+        self.drop.config(font = app_font)
+        self.drop.grid(row=0,column=1,padx=5,pady=10)
+
+        self.choice = Label(self,text="Current Selected User: ",font=app_font)
+        self.choice.grid(row=0,column=2)
+
+        self.user = Label(self,text = "None",font = app_font)
+        self.user.grid(row=0,column=3)
+
+        self.grid_columnconfigure(0,weight=1)
+        self.grid_columnconfigure(1,weight=1)
+        self.grid_columnconfigure(2,weight=1)
+        self.grid_columnconfigure(3,weight=1)
+
+    def show(self,event): 
+        s = self.clicked.get()
+        self.user.config(text = s)
+
+class Features(Frame):
+    def __init__(self,master=None):
+        super().__init__(master)
+        self.master = master
+        self.grid(row=2,sticky="ew",pady=(0,0))
+
+        grid_config_dict = {'row':0,'padx':0,'pady':(0,0),'sticky':"nsew"}
+        self.button1 = Button(self,text="Incoming Messages",font=app_font)
+        self.button1.grid(grid_config_dict,column=0)
+        self.button2 = Button(self,text="Your Contacts",font=app_font)
+        self.button2.grid(grid_config_dict,column=1)
+        self.button3 = Button(self,text="Your Groups",font=app_font)
+        self.button3.grid(grid_config_dict,column=2)
+        self.button4 = Button(self,text="Post Something",font=app_font)
+        self.button4.grid(grid_config_dict,column=3)
+
+        self.grid_columnconfigure(0,weight=1)
+        self.grid_columnconfigure(1,weight=1)
+        self.grid_columnconfigure(2,weight=1)
+        self.grid_columnconfigure(3,weight=1)
+
+class Display(Frame):
+    def __init__(self,master=None):
+        super().__init__(master,background="cyan")
+        self.master = master
+        self.grid(row=3,column=0,sticky="nsew")
+
+
+
+
+
+
+
+class App(Frame):
+    def __init__(self,master=None):
+        super().__init__(master)
+        self.master = master
+        self.master.geometry('1000x800')
+        self.master.title('Social Network')
         
-if __name__== "__main__":
-    # read_file()
+        self.master.grid_rowconfigure(0,weight = 1,uniform = "row_unity")
+        self.master.grid_rowconfigure(1,weight = 1,uniform = "row_unity")
+        self.master.grid_rowconfigure(2,weight = 1,uniform = "row_unity")
+        self.master.grid_rowconfigure(3,weight = 7,uniform = "row_unity")
+
+        self.master.grid_columnconfigure(0,weight = 1)
+        # self.master.grid_columnconfigure(1,weight = 1,uniform = "column_uniform")
+        # self.master.grid_columnconfigure(2,weight = 1,uniform = "column_uniform")
+        # self.master.grid_columnconfigure(3,weight = 1,uniform = "column_uniform")
+
+        self.welcome = Welcome(self.master)
+        self.usermenu = UserMenu(self.master)
+        self.features = Features(self.master)
+        self.display = Display(self.master)
+
+app = App(root)
+# # root.config(menu=app.menubar.user_menubar)
+# root.mainloop()
+
+# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+
+root.mainloop()
+    

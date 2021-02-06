@@ -1,8 +1,8 @@
 # users
-<asss:b,c,d>
-<b:c,a>
-<c:a,b>
-<d:a>
+<debanjan:rajat,biswarup,sanjana>
+<biswarup:rajat,debanjan>
+<sanjana:debanjan,rajat>
+<rajat:debanjan,biswarup>
 # groups
-<x:a,b>
-<y:c,d>
+<bff:debanjan,biswarup,rajat>
+<family:debanjan,sanjana>
