@@ -1,6 +1,10 @@
 from tkinter import *
 from ast import literal_eval
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure 
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,  
+NavigationToolbar2Tk) 
 
 class LeftFrame(Frame):
     def __init__(self, master=None):
@@ -9,13 +13,12 @@ class LeftFrame(Frame):
         self.grid(row=0, column=0,sticky=S+N+E+W)
         master.grid_columnconfigure(0,weight=1)
         master.grid_rowconfigure(0,weight=1)
-        self.textbox = Text(self,width=50,height=20,padx=10,pady=10,bd=5)
-        self.textbox.insert(END,"enter your expression and value of variable")
-        self.textbox.grid(row=0,column=0,sticky=S+N+E+W)
+        # self.textbox = Text(self,width=50,height=20,padx=10,pady=10,bd=5)
+        # self.textbox.insert(END,"enter your expression and value of variable")
+        # self.textbox.grid(row=0,column=0,sticky=S+N+E+W)
 
-    def insert(self, ins_string):
-        textbox.insert(END,ins_string)
-
+    # def insert(self, ins_string):
+    #     self.textbox.insert(END,ins_string)
 
 
 class RightFrame(Frame):
@@ -53,14 +56,35 @@ class RightFrame(Frame):
         varval=self.variablevalue.get(1.0,END)
         print(varval)
         a=literal_eval(varval)
-        self.lframe.textbox.delete(1.0,END)
+        # self.lframe.textbox.delete(1.0,END)
         print(a)
-        for x in np.linspace(a[0],a[1],10):
-            expr=expr.strip('\n')
-            y=eval(expr)
-            print(expr+' ( '+str(x)+' ) '+' = '+str(y))
-            self.lframe.textbox.insert(END,expr+' ( '+str(x)+' ) '+' = '+str(y)+'\n')
 
+        # for x in np.linspace(a[0],a[1],10):
+        #     expr=expr.strip('\n')
+        #     y=eval(expr)
+        #     print(expr+' ( '+str(x)+' ) '+' = '+str(y))
+        #     self.lframe.textbox.insert(END,expr+' ( '+str(x)+' ) '+' = '+str(y)+'\n')
+
+        expr=expr.strip('\n')
+        x = np.linspace(a[0],a[1],10)
+
+        dict = {'x':x}
+        y = eval(expr,dict)
+        # print(expr+' ( '+str(x)+' ) '+' = '+str(val))
+        # self.lframe.textbox.insert(END,expr+' ( '+str(x)+' ) '+' = '+str(val)+'\n')
+        fig = plt.figure(1)
+        plt.ion()
+        plt.plot(x,y)
+
+        canvas = FigureCanvasTkAgg(fig, master=self.lframe)
+        plot_widget = canvas.get_tk_widget()
+
+        # fig.canvas.draw()
+
+        plot_widget.grid(row = 0,column=0)
+        
+
+    
 
 
 class Window(Frame):
@@ -79,7 +103,7 @@ root = Tk()
 app = Window(root)
 
 # set window title
-#root.wm_title("Tkinter window")
+# root.wm_title("Tkinter window")
 
 # show window
 root.mainloop()
