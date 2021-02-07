@@ -4,7 +4,8 @@ from tkinter import filedialog,messagebox
 
 
 root = Tk()
-app_font = ("Helvetica",13)
+app_font = ("Ubuntu",13)
+heading_font = ("Ubuntu",16)
 
 def read_file():
 
@@ -89,13 +90,13 @@ class Welcome(Frame):
         super().__init__(master,background="thistle4")
         self.master = master
         self.grid(row=0,column=0,sticky="nsew")
-        self.label = Label(self,bg="thistle4",text= "WELCOME TO PYTHON SOCIAL NETWORKING APP",font=("Helvetica",16))
+        self.label = Label(self,bg="thistle4",text= "WELCOME TO PYTHON SOCIAL NETWORKING APP",font=heading_font)
         self.label.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 
 class UserMenu(Frame):
     def __init__(self,master=None,display = None):
-        super().__init__(master)
+        super().__init__(master,bg="coral")
         self.master = master
         self.display = display
         self.grid(row=1,column=0,sticky="nsew")
@@ -128,27 +129,29 @@ class UserMenu(Frame):
         self.user.config(text = s)
         self.userid = s
         self.display.clear_display()
-        self.msg = Label(self.display,text="Hello {},You can check messages or your contacts and groups or post".format(s),font=app_font)
+        self.msg = Label(self.display,text="Hello {},You can check messages or,\nCheck your contacts and groups or,\nPost something".format(s),font=heading_font)
         self.msg.place(relx=0.5,rely=0.5,anchor=CENTER)
         self.display.userid = s
 
 class Features(Frame):
     def __init__(self,master=None,commands=None):
-        super().__init__(master)
+        super().__init__(master,bg="palegreen4")
         self.master = master
         self.commands = commands
-        self.grid(row=2,sticky="ew",pady=(0,0))
+        self.grid(row=2,sticky="nsew",pady=(0,0))
 
-        grid_config_dict = {'row':0,'padx':0,'pady':(0,0),'sticky':"nsew"}
-        self.button1 = Button(self,text="Incoming Messages",font=app_font,command=self.commands['messages'])
+        button_config = {'font':app_font,'bg':"black",'fg':"white"}
+        grid_config_dict = {'row':0,'padx':0,'pady':(0,0),'sticky':"ew"}
+        self.button1 = Button(self,button_config,text="Incoming Messages",command=self.commands['messages'])
         self.button1.grid(grid_config_dict,column=0)
-        self.button2 = Button(self,text="Your Contacts",font=app_font,command=self.commands['contacts'])
+        self.button2 = Button(self,button_config,text="Your Contacts",command=self.commands['contacts'])
         self.button2.grid(grid_config_dict,column=1)
-        self.button3 = Button(self,text="Your Groups",font=app_font,command=self.commands['groups'])
+        self.button3 = Button(self,button_config,text="Your Groups",command=self.commands['groups'])
         self.button3.grid(grid_config_dict,column=2)
-        self.button4 = Button(self,text="Post Something",font=app_font,command=self.commands['post'])
+        self.button4 = Button(self,button_config,text="Post Something",command=self.commands['post'])
         self.button4.grid(grid_config_dict,column=3)
 
+        self.grid_rowconfigure(0,weight=1)
         self.grid_columnconfigure(0,weight=1)
         self.grid_columnconfigure(1,weight=1)
         self.grid_columnconfigure(2,weight=1)
@@ -156,7 +159,7 @@ class Features(Frame):
 
 class Display(Frame):
     def __init__(self,master=None):
-        super().__init__(master)
+        super().__init__(master,bg="chocolate1")
         self.master = master
         self.grid(row=3,column=0,sticky="nsew")
         self.userid = ""
@@ -186,7 +189,7 @@ class Display(Frame):
             serial = Label(msg_frame,text=str(cnt+1),font=app_font)
             serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
             
-            showtxt = Label(msg_frame,text="Sent by:"+msg_from+" ,"+"Message: "+msg_txt+" ",bg="white",font=app_font)
+            showtxt = Label(msg_frame,text="Sent by:"+msg_from+" ,"+"Message: "+msg_txt+" ",font=app_font)
             showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
 
             if imgfile != "NULL":
@@ -195,17 +198,17 @@ class Display(Frame):
                 img = ImageTk.PhotoImage(img) 
 
             if img is not None:
-                panel = Label(msg_frame, image = img,bg="white") 
+                panel = Label(msg_frame, image = img,pady=5) 
                 panel.image = img 
-                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="e")
+                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="ew")
             else:
-                panel = Label(msg_frame,text="NO IMAGE",bg="white",font=app_font) 
-                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="e")
+                panel = Label(msg_frame,text="NO IMAGE",font=app_font) 
+                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="ew")
 
 
         if len(messages) == 0:
-            panel = Label(msg_frame,text="NO MESSAGES") 
-            panel.grid(row = 0,column=0,columnspan=3,padx=10,pady=5,sticky="e")
+            panel = Label(msg_frame,text="NO MESSAGES",font=app_font) 
+            panel.grid(row = 0,column=0,columnspan=3,padx=10,pady=5,sticky="we")
         
 
     def get_contacts(self):
@@ -248,16 +251,16 @@ class Display(Frame):
         self.clear_display()
         userid = self.userid
 
-        self.option_frame = Frame(self)
+        self.option_frame = Frame(self,bg="cadet blue")
         self.option_frame.grid(row=0,column=0,sticky="nsew",padx=10,pady=10)
-        self.message_frame = Frame(self)
+        self.message_frame = Frame(self,bg="cadet blue")
         self.message_frame.grid(row=1,column=0,sticky="nsew",padx=10,pady=10)
 
         self.grid_rowconfigure(0,weight = 2)
         self.grid_rowconfigure(1,weight = 8)
         self.grid_columnconfigure(0,weight = 1)
 
-        label1 = Label(self.option_frame,text="Okay,{} Where do yo want to post to?".format(userid),font=app_font)
+        label1 = Label(self.option_frame,text="Okay {}, Where do you want to post to?".format(userid),font=app_font)
         label1.grid(row=0,column=0,pady=5,padx=5,sticky="nsew")
 
         self.options =[]
@@ -311,7 +314,7 @@ class Display(Frame):
 
         imglabel = Label(self.message_frame,text="Select an image to post(Optional) :",font=app_font)
         imglabel.grid(row=0,column=1,padx=10,pady=5)
-        image = Button(self.message_frame, text ='Open image', command = open_img,font=app_font)
+        image = Button(self.message_frame, text ='Upload image', command = open_img,font=app_font)
         image.grid(row = 1, column = 1,padx=10,pady=5)
 
 
@@ -323,10 +326,11 @@ class Display(Frame):
             elif self.post_to in data[1]:
                 for user in data[1][self.post_to]:
                     if user!=self.userid:
-                        data[2][user].append([self.userid + " in "+self.post_to+ "group",self.msg,self.photofile])
+                        data[2][user].append([self.userid + " in "+self.post_to+ " group",self.msg,self.photofile])
 
             print("posted")
             messagebox.showinfo("Message", "Successfully Posted") 
+            self.create_post()
            
         submit = Button(self.message_frame,text="Post",command=post,font=app_font)
         submit.grid(row=2,column=0,padx=10,pady=5)
@@ -359,8 +363,6 @@ class App(Frame):
         self.usermenu = UserMenu(self.master,self.display)
         commands = self.display.get_commands()
         self.features = Features(self.master,commands)
-
-
 
 
 app = App(root)
