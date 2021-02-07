@@ -1,34 +1,6 @@
-# class User():
-#     def __init__(self,userid=None,contact_list = None):
-#         self.userid = userid
-#         self.contact_list = contact_list
-#         self.messages = []
-
-#     def get_userid(self):
-#         return self.userid
-
-#     def get_contact_list(self):
-#         return self.contact_list
-    
-#     def add_message(self,post):
-#         self.messages.append(post)
-
-
-# class Group():
-#     def __init__(self,groupid=None,member_list = None):
-#         self.groupid = groupid
-#         self.member_list = member_list
-#         self.messages = []
-    
-#     def get_groupid(self):
-#         return self.groupid
-
-#     def get_member_list(self):
-#         return self.member_list
-
-#     def add_message(self,post):
-#         self.messages.append(post)
-        
+from tkinter import *
+from PIL import ImageTk,Image
+from tkinter import filedialog,messagebox
 
 def read_file():
 
@@ -37,6 +9,9 @@ def read_file():
     hash_cnt = 0
     user_dict= {}
     group_dict = {}
+    messages_dict = {}
+    posts_dict = {}
+    user_groups = {}
 
     for line in file:
         # print(line)
@@ -58,6 +33,9 @@ def read_file():
                     contact_list.append(contact)
 
                 user_dict[userid] = contact_list
+                messages_dict[userid] = []
+                posts_dict[userid] = []
+                user_groups[userid] = []
 
             else:
                 line[1] = line[1].split(',')
@@ -65,26 +43,35 @@ def read_file():
                 member_list = []
                 for member in line[1]:
                     member_list.append(member)
+                    user_groups[member].append(groupid)
 
                 group_dict[groupid]=member_list
             
     file.close()
-    return (user_dict,group_dict)
+    return [user_dict,group_dict,messages_dict,user_groups]
 
-    # for group in group_list:
-    #     print( group.get_groupid())
-    #     for y in group.get_member_list():
-    #         print(y+", ",end='')
-    #     print()
-    
-from tkinter import *
+    #Read messages here...
 
-from matplotlib.pyplot import text 
+
+
+def update_message():
+    file = open("messages.txt",'w')
+    for user in data[2]:
+        for obj in data[2][user]:
+            if len(obj)==0:
+                break
+            file.write(user+"\n")
+            file.write(obj[0]+"\n")
+            file.write(obj[1]+"\n")
+            file.write(obj[2]+"\n")
+    file.close()
+
+
+
 root = Tk()
 app_font = ("Helvetica",13)
 
 data = read_file()
-
 
 class Welcome(Frame):
      def __init__(self,master=None):
@@ -96,9 +83,10 @@ class Welcome(Frame):
 
 
 class UserMenu(Frame):
-    def __init__(self,master=None):
+    def __init__(self,master=None,display = None):
         super().__init__(master)
         self.master = master
+        self.display = display
         self.grid(row=1,column=0,sticky="nsew")
         self.userid = ""
 
@@ -128,25 +116,26 @@ class UserMenu(Frame):
         s = self.clicked.get()
         self.user.config(text = s)
         self.userid = s
-
-    def get_userid(self):
-        return self.userid
+        self.display.clear_display()
+        self.msg = Label(self.display,text="Hello {},You can check messages or your contacts and groups or post".format(s))
+        self.msg.place(relx=0.5,rely=0.5,anchor=CENTER)
+        self.display.userid = s
 
 class Features(Frame):
-    def __init__(self,master=None,display = None):
+    def __init__(self,master=None,commands=None):
         super().__init__(master)
         self.master = master
-        self.display = display
+        self.commands = commands
         self.grid(row=2,sticky="ew",pady=(0,0))
 
         grid_config_dict = {'row':0,'padx':0,'pady':(0,0),'sticky':"nsew"}
-        self.button1 = Button(self,text="Incoming Messages",font=app_font)
+        self.button1 = Button(self,text="Incoming Messages",font=app_font,command=self.commands['messages'])
         self.button1.grid(grid_config_dict,column=0)
-        self.button2 = Button(self,text="Your Contacts",font=app_font,command=self.display.get_contacts)
+        self.button2 = Button(self,text="Your Contacts",font=app_font,command=self.commands['contacts'])
         self.button2.grid(grid_config_dict,column=1)
-        self.button3 = Button(self,text="Your Groups",font=app_font)
+        self.button3 = Button(self,text="Your Groups",font=app_font,command=self.commands['groups'])
         self.button3.grid(grid_config_dict,column=2)
-        self.button4 = Button(self,text="Post Something",font=app_font)
+        self.button4 = Button(self,text="Post Something",font=app_font,command=self.commands['post'])
         self.button4.grid(grid_config_dict,column=3)
 
         self.grid_columnconfigure(0,weight=1)
@@ -155,30 +144,143 @@ class Features(Frame):
         self.grid_columnconfigure(3,weight=1)
 
 class Display(Frame):
-    def __init__(self,master=None,usermenu=None):
-        super().__init__(master,background="cyan")
+    def __init__(self,master=None):
+        super().__init__(master)
         self.master = master
         self.grid(row=3,column=0,sticky="nsew")
-        self.usermenu = usermenu
+        self.userid = ""
+        
+      
+    def clear_display(self):
+        for widget in self.winfo_children():
+            widget.destroy()
 
-        self.label = Label(self,text="")
-        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
+        
+    def get_messages(self):
+        self.clear_display()
+
+        userid = self.userid
+
 
     def get_contacts(self):
-        userid = self.usermenu.get_userid()
+        self.clear_display()
+
+        userid = self.userid
         s = ""   
         for contact in data[0][userid]:
             s += (contact + "\n")
+        self.label = Label(self,text="")
+        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
+    
         self.label.config(text=s)
+  
+    def get_groups(self):
+        self.clear_display()
+
+        userid = self.userid
+        s = ""   
+        for contact in data[3][userid]:
+            s += (contact + "\n")
+        self.label = Label(self,text="")
+        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
+
+        self.label.config(text=s)
+
+
+    def create_post(self):
+        userid = self.userid
+        self.clear_display()
+
+        self.option_frame = Frame(self)
+        self.option_frame.grid(row=0,column=0,sticky="nsew",padx=10,pady=10)
+        self.message_frame = Frame(self)
+        self.message_frame.grid(row=1,column=0,sticky="nsew",padx=10,pady=10)
+
+        self.grid_rowconfigure(0,weight = 2,uniform="posting_row")
+        self.grid_rowconfigure(1,weight = 8,uniform="posting_row")
+        self.grid_columnconfigure(0,weight = 1)
+
+        label1 = Label(self.option_frame,text="Okay,{} Where do yo want to post to?".format(userid))
+        label1.grid(row=0,column=0,pady=5,padx=5,sticky="nsew")
+
+        self.options =[]
+        self.clicked = StringVar() 
+        self.clicked.set("None Selected")
         
+        for contact in data[0][userid]:
+            self.options.append(contact)
+        
+        for group in data[3][userid]:
+            self.options.append(group)
+
+        self.post_to = ""
+        def id_post(event): 
+            s = self.clicked.get()
+            self.post_to = s
+            print(s)
+            return s
+
+        drop = OptionMenu(self.option_frame, self.clicked ,*self.options ,command=id_post) 
+        drop.config(font = app_font)
+        drop.grid(row=0,column=1,padx=5,pady=10)
+
+        msglabel = Label(self.message_frame,text="Enter your message to post :")
+        msglabel.grid(row=0,column=0,padx=10,pady=5)
+        message = Text(self.message_frame,font=app_font,height = 5,width = 30)
+        message.grid(row=1,column=0,padx=30,pady=5)
+
+        self.msg = "NULL"
+        self.photofile = "NULL"
+
+        def openfilename(): 
+            # open file dialog box to select image 
+            # The dialogue box has a title "Open" 
+            filename = filedialog.askopenfilename(title ='Open') 
+            print(filename)
+            self.photofile = filename
+            return filename 
+        
+        def open_img(): 
+            x = openfilename() 
+            img = Image.open(x) 
+            # resize the image and apply a high-quality down sampling filter 
+            img = img.resize((350, 200), Image.ANTIALIAS) 
+            # PhotoImage class is used to add image to widgets, icons etc 
+            img = ImageTk.PhotoImage(img) 
+            # create a label 
+            panel = Label(self.message_frame, image = img) 
+            panel.image = img 
+            panel.grid(row = 2,column=1,columnspan=3,padx=10,pady=5)
+
+        imglabel = Label(self.message_frame,text="Select an image to post(Optional) :")
+        imglabel.grid(row=0,column=1,padx=10,pady=5)
+        image = Button(self.message_frame, text ='Open image', command = open_img)
+        image.grid(row = 1, column = 1,padx=10,pady=5)
+
+
+        def post():
+            self.msg = message.get(1.0,END).strip('\n')
+            self.photofile = self.photofile.strip('\n')
+            if self.post_to in data[0]:
+                data[2][self.post_to].append([self.userid,self.msg,self.photofile])
+            elif self.post_to in data[1]:
+                for user in data[1][self.post_to]:
+                    if user!=self.userid:
+                        data[2][user].append([self.userid + " in "+self.post_to+ "group",self.msg,self.photofile])
+
+            print("posted")
+            messagebox.showinfo("Message", "Successfully Posted") 
+           
+        submit = Button(self.message_frame,text="Post",command=post)
+        submit.grid(row=2,column=0,padx=10,pady=5)
+
 
     def get_commands(self):
-        return [self.get_contacts]
-
-
-
-
-
+        commands = {'contacts':self.get_contacts,'messages':self.get_messages,
+        'groups':self.get_groups,'post':self.create_post} 
+        
+        return commands
+ 
 
 class App(Frame):
     def __init__(self,master=None):
@@ -193,21 +295,19 @@ class App(Frame):
         self.master.grid_rowconfigure(3,weight = 7,uniform = "row_unity")
 
         self.master.grid_columnconfigure(0,weight = 1)
-        # self.master.grid_columnconfigure(1,weight = 1,uniform = "column_uniform")
-        # self.master.grid_columnconfigure(2,weight = 1,uniform = "column_uniform")
-        # self.master.grid_columnconfigure(3,weight = 1,uniform = "column_uniform")
-
+        
+        self.display = Display(self.master)
         self.welcome = Welcome(self.master)
-        self.usermenu = UserMenu(self.master)
-        self.display = Display(self.master,self.usermenu)
-        self.features = Features(self.master,self.display)
+        self.usermenu = UserMenu(self.master,self.display)
+        commands = self.display.get_commands()
+        self.features = Features(self.master,commands)
+
+
+
 
 app = App(root)
-# # root.config(menu=app.menubar.user_menubar)
-# root.mainloop()
-
-# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
 
 root.mainloop()
-    
+
+update_message()
+        
