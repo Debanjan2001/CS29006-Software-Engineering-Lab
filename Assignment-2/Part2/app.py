@@ -1,6 +1,10 @@
-from tkinter import *
+from tkinter import *   
 from PIL import ImageTk,Image
 from tkinter import filedialog,messagebox
+
+
+root = Tk()
+app_font = ("Helvetica",13)
 
 def read_file():
 
@@ -48,10 +52,20 @@ def read_file():
                 group_dict[groupid]=member_list
             
     file.close()
+
+    #Messages
+    file = open("messages.txt",'r')
+    for msg_to in file:
+        msg_from = file.readline().strip('\n')
+        msg = file.readline().strip('\n')
+        photofile = file.readline().strip('\n')
+        msg_to = msg_to.strip('\n')
+        print([msg_from,msg,photofile])
+        messages_dict[msg_to].append([msg_from,msg,photofile])
+
+    file.close()
+
     return [user_dict,group_dict,messages_dict,user_groups]
-
-    #Read messages here...
-
 
 
 def update_message():
@@ -67,9 +81,6 @@ def update_message():
     file.close()
 
 
-
-root = Tk()
-app_font = ("Helvetica",13)
 
 data = read_file()
 
@@ -117,7 +128,7 @@ class UserMenu(Frame):
         self.user.config(text = s)
         self.userid = s
         self.display.clear_display()
-        self.msg = Label(self.display,text="Hello {},You can check messages or your contacts and groups or post".format(s))
+        self.msg = Label(self.display,text="Hello {},You can check messages or your contacts and groups or post".format(s),font=app_font)
         self.msg.place(relx=0.5,rely=0.5,anchor=CENTER)
         self.display.userid = s
 
@@ -158,49 +169,95 @@ class Display(Frame):
         
     def get_messages(self):
         self.clear_display()
-
         userid = self.userid
 
+        self.grid_columnconfigure(0,weight=1)
+        
+        msg_frame = Frame(self,bg="white")
+        msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+
+        messages = data[2][userid]
+        
+        for cnt,msg in enumerate(reversed(messages)):
+            msg_from = msg[0]
+            msg_txt = msg[1]
+            imgfile = msg[2]
+            img = None
+            serial = Label(msg_frame,text=str(cnt+1),font=app_font)
+            serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
+            
+            showtxt = Label(msg_frame,text="Sent by:"+msg_from+" ,"+"Message: "+msg_txt+" ",bg="white",font=app_font)
+            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
+
+            if imgfile != "NULL":
+                img = Image.open(imgfile)
+                img = img.resize((175, 100), Image.ANTIALIAS) 
+                img = ImageTk.PhotoImage(img) 
+
+            if img is not None:
+                panel = Label(msg_frame, image = img,bg="white") 
+                panel.image = img 
+                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="e")
+            else:
+                panel = Label(msg_frame,text="NO IMAGE",bg="white",font=app_font) 
+                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="e")
+
+
+        if len(messages) == 0:
+            panel = Label(msg_frame,text="NO MESSAGES") 
+            panel.grid(row = 0,column=0,columnspan=3,padx=10,pady=5,sticky="e")
+        
 
     def get_contacts(self):
         self.clear_display()
 
         userid = self.userid
-        s = ""   
-        for contact in data[0][userid]:
-            s += (contact + "\n")
-        self.label = Label(self,text="")
-        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
-    
-        self.label.config(text=s)
-  
+
+        msg_frame = Frame(self,bg="white")
+        msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+
+        friends = data[0][userid]
+        for cnt,fr in enumerate(friends):
+            serial = Label(msg_frame,text=str(cnt+1),font=app_font)
+            serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
+            
+            showtxt = Label(msg_frame,text=fr,bg="white",font=app_font)
+            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
+
+
+
     def get_groups(self):
         self.clear_display()
 
         userid = self.userid
-        s = ""   
-        for contact in data[3][userid]:
-            s += (contact + "\n")
-        self.label = Label(self,text="")
-        self.label.place(relx=0.5,rely=0.5,anchor=CENTER)
 
-        self.label.config(text=s)
+        msg_frame = Frame(self,bg="white")
+        msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+
+        groups = data[3][userid]
+        for cnt,g in enumerate(groups):
+            serial = Label(msg_frame,text=str(cnt+1),font=app_font)
+            serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
+            
+            showtxt = Label(msg_frame,text=g,bg="white",font=app_font)
+            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
+
 
 
     def create_post(self):
-        userid = self.userid
         self.clear_display()
+        userid = self.userid
 
         self.option_frame = Frame(self)
         self.option_frame.grid(row=0,column=0,sticky="nsew",padx=10,pady=10)
         self.message_frame = Frame(self)
         self.message_frame.grid(row=1,column=0,sticky="nsew",padx=10,pady=10)
 
-        self.grid_rowconfigure(0,weight = 2,uniform="posting_row")
-        self.grid_rowconfigure(1,weight = 8,uniform="posting_row")
+        self.grid_rowconfigure(0,weight = 2)
+        self.grid_rowconfigure(1,weight = 8)
         self.grid_columnconfigure(0,weight = 1)
 
-        label1 = Label(self.option_frame,text="Okay,{} Where do yo want to post to?".format(userid))
+        label1 = Label(self.option_frame,text="Okay,{} Where do yo want to post to?".format(userid),font=app_font)
         label1.grid(row=0,column=0,pady=5,padx=5,sticky="nsew")
 
         self.options =[]
@@ -224,7 +281,7 @@ class Display(Frame):
         drop.config(font = app_font)
         drop.grid(row=0,column=1,padx=5,pady=10)
 
-        msglabel = Label(self.message_frame,text="Enter your message to post :")
+        msglabel = Label(self.message_frame,text="Enter your message to post :",font=app_font)
         msglabel.grid(row=0,column=0,padx=10,pady=5)
         message = Text(self.message_frame,font=app_font,height = 5,width = 30)
         message.grid(row=1,column=0,padx=30,pady=5)
@@ -241,8 +298,8 @@ class Display(Frame):
             return filename 
         
         def open_img(): 
-            x = openfilename() 
-            img = Image.open(x) 
+            file = openfilename() 
+            img = Image.open(file) 
             # resize the image and apply a high-quality down sampling filter 
             img = img.resize((350, 200), Image.ANTIALIAS) 
             # PhotoImage class is used to add image to widgets, icons etc 
@@ -252,9 +309,9 @@ class Display(Frame):
             panel.image = img 
             panel.grid(row = 2,column=1,columnspan=3,padx=10,pady=5)
 
-        imglabel = Label(self.message_frame,text="Select an image to post(Optional) :")
+        imglabel = Label(self.message_frame,text="Select an image to post(Optional) :",font=app_font)
         imglabel.grid(row=0,column=1,padx=10,pady=5)
-        image = Button(self.message_frame, text ='Open image', command = open_img)
+        image = Button(self.message_frame, text ='Open image', command = open_img,font=app_font)
         image.grid(row = 1, column = 1,padx=10,pady=5)
 
 
@@ -271,8 +328,9 @@ class Display(Frame):
             print("posted")
             messagebox.showinfo("Message", "Successfully Posted") 
            
-        submit = Button(self.message_frame,text="Post",command=post)
+        submit = Button(self.message_frame,text="Post",command=post,font=app_font)
         submit.grid(row=2,column=0,padx=10,pady=5)
+
 
 
     def get_commands(self):

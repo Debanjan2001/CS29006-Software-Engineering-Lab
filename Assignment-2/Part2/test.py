@@ -1,49 +1,60 @@
 from tkinter import *
-
-root = Tk() 
-from PIL import ImageTk,Image
-from tkinter import filedialog
-def open_img(): 
-    # Select the Imagename  from a folder  
-    x = openfilename() 
-  
-    # opens the image 
-    img = Image.open(x) 
-      
-    # resize the image and apply a high-quality down sampling filter 
-    img = img.resize((400, 300), Image.ANTIALIAS) 
-  
-    # PhotoImage class is used to add image to widgets, icons etc 
-    img = ImageTk.PhotoImage(img) 
    
-    # create a label 
-    panel = Label(root, image = img) 
       
-    # set the image as img  
-    panel.image = img 
-    panel.grid(row = 2) 
+          
+# create root window 
+root = Tk() 
 
-def openfilename(): 
-  
-    # open file dialog box to select image 
-    # The dialogue box has a title "Open" 
-    filename = filedialog.askopenfilename(title ='Open') 
-    print(filename)
-    return filename 
-  
-# Set Title as Image Loader 
-root.title("Image Loader") 
-  
-# Set the resolution of window 
-root.geometry("550x300") 
-  
-# Allow Window to be resizable 
-root.resizable(width = True, height = True) 
-  
-# Create a button and place it into the window using grid layout 
-btn = Button(root, text ='open image', command = open_img).grid( 
-                                        row = 1, columnspan = 4) 
+# create a horizontal scrollbar by 
+# setting orient to horizontal 
+h = Scrollbar(root, orient = 'horizontal') 
 
+# attach Scrollbar to root window at  
+# the bootom 
+h.pack(side = BOTTOM, fill = X) 
 
-root.mainloop() 
+# create a vertical scrollbar-no need 
+# to write orient as it is by 
+# default vertical 
+v = Scrollbar(root) 
+
+# attach Scrollbar to root window on  
+# the side 
+v.pack(side = RIGHT, fill = Y) 
     
+
+# create a Text widget with 15 chars 
+# width and 15 lines height 
+# here xscrollcomannd is used to attach Text 
+# widget to the horizontal scrollbar 
+# here yscrollcomannd is used to attach Text 
+# widget to the vertical scrollbar 
+t = Text(root, width = 15, height = 15, wrap = NONE, 
+            xscrollcommand = h.set,  
+            yscrollcommand = v.set) 
+
+# insert some text into the text widget 
+for i in range(20): 
+    lab = Label(t,text="hello"+str(i))
+    t.insert(END,"\n")
+
+
+
+# attach Text widget to root window at top 
+t.pack(side=TOP, fill=X) 
+
+# here command represents the method to 
+# be executed xview is executed on 
+# object 't' Here t may represent any 
+# widget 
+h.config(command=t.xview) 
+
+# here command represents the method to 
+# be executed yview is executed on 
+# object 't' Here t may represent any 
+# widget 
+v.config(command=t.yview) 
+
+# the root window handles the mouse 
+# click event 
+root.mainloop() 
