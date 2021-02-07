@@ -172,6 +172,7 @@ class Display(Frame):
         
     def get_messages(self):
         self.clear_display()
+        
         userid = self.userid
 
         self.grid_columnconfigure(0,weight=1)
@@ -213,6 +214,8 @@ class Display(Frame):
 
     def get_contacts(self):
         self.clear_display()
+        self.grid_columnconfigure(0,weight=1)
+
 
         userid = self.userid
 
@@ -231,6 +234,7 @@ class Display(Frame):
 
     def get_groups(self):
         self.clear_display()
+        self.grid_columnconfigure(0,weight=1)
 
         userid = self.userid
 
