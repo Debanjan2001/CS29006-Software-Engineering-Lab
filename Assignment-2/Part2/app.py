@@ -4,8 +4,8 @@ from tkinter import filedialog,messagebox
 
 
 root = Tk()
-app_font = ("Ubuntu",13)
-heading_font = ("Ubuntu",16)
+app_font = ("Fixedsys",13)
+heading_font = ("Fixedsys",20,'bold')
 
 def read_file():
 
@@ -129,7 +129,7 @@ class UserMenu(Frame):
         self.user.config(text = s)
         self.userid = s
         self.display.clear_display()
-        self.msg = Label(self.display,text="Hello {},You can check messages or,\nCheck your contacts and groups or,\nPost something".format(s),font=heading_font)
+        self.msg = Label(self.display,text="Hello {}!! You can check messages or,\nCheck your contacts and groups or,\nPost something".format(s),font=heading_font)
         self.msg.place(relx=0.5,rely=0.5,anchor=CENTER)
         self.display.userid = s
 
@@ -175,10 +175,14 @@ class Display(Frame):
         
         userid = self.userid
 
-        self.grid_columnconfigure(0,weight=1)
+        self.grid_columnconfigure(0,weight=2)
         
         msg_frame = Frame(self,bg="white")
         msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+        msg_frame.grid_columnconfigure(0,weight=1)
+        msg_frame.grid_columnconfigure(1,weight=4)
+        msg_frame.grid_columnconfigure(1,weight=4)
+
 
         messages = data[2][userid]
         
@@ -190,21 +194,21 @@ class Display(Frame):
             serial = Label(msg_frame,text=str(cnt+1),font=app_font)
             serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
             
-            showtxt = Label(msg_frame,text="Sent by:"+msg_from+" ,"+"Message: "+msg_txt+" ",font=app_font)
+            showtxt = Label(msg_frame,text="Sent by:"+msg_from+"\n"+"Message: "+msg_txt+" ",font=app_font)
             showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
 
             if imgfile != "NULL":
                 img = Image.open(imgfile)
-                img = img.resize((175, 100), Image.ANTIALIAS) 
+                img = img.resize((200, 125), Image.ANTIALIAS) 
                 img = ImageTk.PhotoImage(img) 
 
             if img is not None:
                 panel = Label(msg_frame, image = img,pady=5) 
                 panel.image = img 
-                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="ew")
+                panel.grid(row = cnt,column=2,padx=10,pady=5,sticky="wnse")
             else:
                 panel = Label(msg_frame,text="NO IMAGE",font=app_font) 
-                panel.grid(row = cnt,column=2,columnspan=3,padx=10,pady=5,sticky="ew")
+                panel.grid(row = cnt,column=2,padx=10,pady=5,sticky="wens")
 
 
         if len(messages) == 0:
@@ -221,6 +225,9 @@ class Display(Frame):
 
         msg_frame = Frame(self,bg="white")
         msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+        msg_frame.grid_columnconfigure(0,weight=1,uniform="col_uniform")
+        msg_frame.grid_columnconfigure(1,weight=4,uniform="col_uniform")
+
 
         friends = data[0][userid]
         for cnt,fr in enumerate(friends):
@@ -228,18 +235,22 @@ class Display(Frame):
             serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
             
             showtxt = Label(msg_frame,text=fr,bg="white",font=app_font)
-            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
+            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsw")
 
 
 
     def get_groups(self):
         self.clear_display()
         self.grid_columnconfigure(0,weight=1)
+        
 
         userid = self.userid
 
         msg_frame = Frame(self,bg="white")
         msg_frame.grid(row=0,column=0,sticky="nsew",padx=100,pady=20)
+        msg_frame.grid_columnconfigure(0,weight=1,uniform="col_uniform")
+        msg_frame.grid_columnconfigure(1,weight=4,uniform="col_uniform")
+
 
         groups = data[3][userid]
         for cnt,g in enumerate(groups):
@@ -247,7 +258,7 @@ class Display(Frame):
             serial.grid(row=cnt,column=0,padx=5,pady=5,sticky="nsew")
             
             showtxt = Label(msg_frame,text=g,bg="white",font=app_font)
-            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsew")
+            showtxt.grid(row=cnt,column=1,padx=5,pady=5,sticky="nsw")
 
 
 
@@ -260,12 +271,19 @@ class Display(Frame):
         self.message_frame = Frame(self,bg="cadet blue")
         self.message_frame.grid(row=1,column=0,sticky="nsew",padx=10,pady=10)
 
+        self.option_frame.grid_columnconfigure(0,weight=2,uniform = "col_uniform")
+        self.option_frame.grid_columnconfigure(1,weight=1,uniform="col_uniform")
+
+        self.message_frame.grid_columnconfigure(0,weight=1,uniform = "col_uniform")
+        self.message_frame.grid_columnconfigure(1,weight=1,uniform="col_uniform")
+
+
         self.grid_rowconfigure(0,weight = 2)
         self.grid_rowconfigure(1,weight = 8)
         self.grid_columnconfigure(0,weight = 1)
 
-        label1 = Label(self.option_frame,text="Okay {}, Where do you want to post to?".format(userid),font=app_font)
-        label1.grid(row=0,column=0,pady=5,padx=5,sticky="nsew")
+        label1 = Label(self.option_frame,text="Okay {},Select a friend/group to post:".format(userid),font=app_font)
+        label1.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 
         self.options =[]
         self.clicked = StringVar() 
@@ -289,9 +307,9 @@ class Display(Frame):
         drop.grid(row=0,column=1,padx=5,pady=10)
 
         msglabel = Label(self.message_frame,text="Enter your message to post :",font=app_font)
-        msglabel.grid(row=0,column=0,padx=10,pady=5)
+        msglabel.grid(row=0,column=0,padx=10,pady=20)
         message = Text(self.message_frame,font=app_font,height = 5,width = 30)
-        message.grid(row=1,column=0,padx=30,pady=5)
+        message.grid(row=1,column=0,padx=30,pady=20)
 
         self.msg = "NULL"
         self.photofile = "NULL"
@@ -317,7 +335,7 @@ class Display(Frame):
             panel.grid(row = 2,column=1,columnspan=3,padx=10,pady=5)
 
         imglabel = Label(self.message_frame,text="Select an image to post(Optional) :",font=app_font)
-        imglabel.grid(row=0,column=1,padx=10,pady=5)
+        imglabel.grid(row=0,column=1,padx=10,pady=20)
         image = Button(self.message_frame, text ='Upload image', command = open_img,font=app_font)
         image.grid(row = 1, column = 1,padx=10,pady=5)
 
@@ -325,16 +343,19 @@ class Display(Frame):
         def post():
             self.msg = message.get(1.0,END).strip('\n')
             self.photofile = self.photofile.strip('\n')
-            if self.post_to in data[0]:
-                data[2][self.post_to].append([self.userid,self.msg,self.photofile])
-            elif self.post_to in data[1]:
-                for user in data[1][self.post_to]:
-                    if user!=self.userid:
-                        data[2][user].append([self.userid + " in "+self.post_to+ " group",self.msg,self.photofile])
+            if self.post_to != "" and self.msg != "":
+                if self.post_to in data[0]:
+                    data[2][self.post_to].append([self.userid,self.msg,self.photofile])
+                elif self.post_to in data[1]:
+                    for user in data[1][self.post_to]:
+                        if user!=self.userid:
+                            data[2][user].append([self.userid + " in "+self.post_to+ " group",self.msg,self.photofile])
 
-            print("posted")
-            messagebox.showinfo("Message", "Successfully Posted") 
-            self.create_post()
+                print("posted")
+                messagebox.showinfo("Message", "Successfully Posted") 
+                self.create_post()
+            else:
+                messagebox.showinfo("Message", "Error!Empty Message or No user Selected!") 
            
         submit = Button(self.message_frame,text="Post",command=post,font=app_font)
         submit.grid(row=2,column=0,padx=10,pady=5)

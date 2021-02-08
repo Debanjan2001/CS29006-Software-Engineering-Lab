@@ -27,12 +27,12 @@ class LeftFrame(Frame):
         self.expression = Text(self,height=2,width=20,font=app_font)
         self.expression.grid(row=1,column=1,padx = 5,pady = 20)
 
-        self.lb = Label(self,text = "Enter Lower Bound of Iteration : ",font=app_font)
+        self.lb = Label(self,text = "Enter Lower Bound of Iteration : \n(Starting value of x)",font=app_font)
         self.lb.grid(row=2,column=0,padx=5,pady=10)
         self.lbound = Text(self,height=2,width=20,font=app_font)
         self.lbound.grid(row=2,column=1,padx = 5,pady = 20)
 
-        self.ub = Label(self,text = "Enter Upper Bound of Iteration : ",font=app_font)
+        self.ub = Label(self,text = "Enter Upper Bound of Iteration : \n(Final value of x)",font=app_font)
         self.ub.grid(row=3,column=0,padx=5,pady=10)
         self.ubound = Text(self,height=2,width=20,font=app_font)
         self.ubound.grid(row=3,column=1,padx = 5,pady = 20)

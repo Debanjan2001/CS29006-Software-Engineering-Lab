@@ -4,5 +4,5 @@
 <sanjana:debanjan,rajat>
 <rajat:debanjan,biswarup>
 # groups
-<bff:debanjan,biswarup,rajat>
+<friends:debanjan,biswarup,rajat>
 <family:debanjan,sanjana>
