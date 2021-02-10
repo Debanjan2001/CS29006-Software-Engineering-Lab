@@ -334,6 +334,7 @@ class Library
                         }
                         
                         tot_count += word_count;
+
                     }
 
                     query_chap.insert({tot_count,i});
@@ -341,13 +342,12 @@ class Library
                     {
                         query_chap.erase(query_chap.begin());
                     }
+               		
+               		tot_count = 0;
+
                 }
 
-                if(tot_count == 0)
-                {
-                    cout<<"NO SUCH WORD FOUND..."<<endl;
-                    return;
-                }
+               
                 int input = 0;
                 
 
