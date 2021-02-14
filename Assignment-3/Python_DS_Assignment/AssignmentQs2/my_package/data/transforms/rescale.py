@@ -15,6 +15,7 @@ class RescaleImage(object):
         '''
 
         # Write your code here
+        self.output_size = output_size
 
     def __call__(self, image):
         '''

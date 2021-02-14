@@ -1,7 +1,7 @@
 #Imports
 from my_package.model import ObjectDetectionModel
 from my_package.data import Dataset
-from my_package.analysis import show_boxes
+# from my_package.analysis import show_boxes
 from my_package.data.transforms import FlipImage, RescaleImage, BlurImage, CropImage, RotateImage
 
 def experiment(annotation_file, detector, transforms, outputs):
@@ -16,8 +16,8 @@ def experiment(annotation_file, detector, transforms, outputs):
     '''
 
     #Create the instance of the dataset.
-    
-
+    dataset = Dataset(annotation_file=annotation_file,transforms=transforms)
+    dataset[4]
     #Iterate over all data items.
     
 
@@ -28,13 +28,12 @@ def experiment(annotation_file, detector, transforms, outputs):
 
 
     #Do the required analysis experiments.
-    
+
 
 
 def main():
     detector = ObjectDetectionModel()
-    experiment('./data/annotations.jsonl', detector, [FlipImage(), BlurImage()], None) # Sample arguments to call experiment()
-
+    experiment('./data/annotations.jsonl', detector, [FlipImage(), BlurImage(1),RotateImage(270)], None) # Sample arguments to call experiment()
 
 
 if __name__ == '__main__':

@@ -13,6 +13,7 @@ class RotateImage(object):
         '''
         
         # Write your code here
+        self.degrees = degrees
 
     def __call__(self, sample):
         '''
@@ -24,3 +25,7 @@ class RotateImage(object):
         '''
 
         # Write your code here
+        self.img = sample
+        self.img = self.img.rotate(self.degrees)
+
+        return self.img

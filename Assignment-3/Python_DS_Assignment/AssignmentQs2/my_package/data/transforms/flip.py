@@ -1,5 +1,5 @@
 #Imports
-
+from PIL import Image
 
 class FlipImage(object):
     '''
@@ -13,6 +13,8 @@ class FlipImage(object):
         '''
 
         # Write your code here
+        self.flip_type = flip_type
+
 
         
     def __call__(self, image):
@@ -24,6 +26,14 @@ class FlipImage(object):
             image (numpy array or PIL image)
         '''
 
-        # Write your code here
 
+        # Write your code here
+        self.img = image
+        if self.flip_type == 'horizontal':
+            self.img = self.img.transpose(Image.FLIP_LEFT_RIGHT)
+        else:
+            self.img = self.img.transpose(Image.FLIP_TOP_BOTTOM)
+
+        return self.img
+        
        

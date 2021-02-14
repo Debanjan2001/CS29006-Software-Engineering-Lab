@@ -56,4 +56,3 @@ class ObjectDetectionModel(object):
 		pred_score = list(predictions[0]['scores'].detach().numpy())
 		
 		return pred_boxes, pred_class, pred_score
-

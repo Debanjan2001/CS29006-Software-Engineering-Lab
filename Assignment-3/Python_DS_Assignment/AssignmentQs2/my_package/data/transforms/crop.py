@@ -1,10 +1,11 @@
 #Imports
-
+from PIL import Image
 
 class CropImage(object):
     '''
         Performs either random cropping or center cropping.
     '''
+
 
     def __init__(self, shape, crop_type='center'):
         '''
@@ -14,6 +15,9 @@ class CropImage(object):
         '''
 
         # Write your code here
+        self.shape = shape
+        self.crop_type = crop_type
+        
 
     def __call__(self, image):
         '''
@@ -25,6 +29,10 @@ class CropImage(object):
         '''
 
         # Write your code here
+        self.img = image
+
+
+
 
         
 

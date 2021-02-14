@@ -1,4 +1,7 @@
 #Imports
+import json
+from PIL import Image
+import numpy as np
 
 
 class Dataset(object):
@@ -14,14 +17,21 @@ class Dataset(object):
                         For instance, [<class 'RandomCrop'>, <class 'Rotate'>]
         '''
 
-        
+        self.annotation_file = annotation_file
+        self.transforms = transforms
 
+        with open(self.annotation_file, 'r') as json_file:
+            self.annotation_list = list(json_file)
+        
+        # for json_str in self.annotations_list:
+        #     result = json.loads(json_str)
+            
     def __len__(self):
         '''
             return the number of data points in the dataset
         '''
+        return len(self.annotation_list)
 
-        
 
     def __getitem__(self, idx):
         '''
@@ -45,5 +55,32 @@ class Dataset(object):
             4. Perform the desired transformations.
             5. Return the transformed image and annotations as specified.
         '''
+        annotation = json.loads(self.annotation_list[idx])
+        imgfile = annotation["img_fn"]
+        image = Image.open('./data/'+imgfile)
+        img_array = np.array(image,np.float64)
+
+        dim = img_array.shape
+
+        transformed_image = self.transforms[2](image)
+        image.show()
+        transformed_image.show()
+
+        # for i in range(dim[0]):
+        #     for j in range(dim[1]):
+        #         for k in range(dim[2]):
+        #             img_array[i,j,k] = img_array[i,j,k]/255.0
+        
+
+        # print(img_array[0][0])
+        # print(img_array.shape)
+
+
+
+
+
+
+
+
 
         
