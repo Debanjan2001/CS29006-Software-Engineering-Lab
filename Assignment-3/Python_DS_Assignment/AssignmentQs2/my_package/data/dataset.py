@@ -69,7 +69,9 @@ class Dataset(object):
         img_array = np.array(transformed_image,np.float64)
 
         img_array = img_array/255.0
-        
+
+        img_array = img_array.transpose(2,0,1)
+
         # print(img_array[100][100])
         # print(img_array.shape)
 
