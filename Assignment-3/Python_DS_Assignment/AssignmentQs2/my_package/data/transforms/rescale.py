@@ -1,5 +1,5 @@
 #Imports
-
+from PIL import Image
 
 class RescaleImage(object):
     '''
@@ -29,3 +29,11 @@ class RescaleImage(object):
         '''
 
         # Write your code here
+        self.img = image
+        if isinstance(self.output_size,int):
+            previous_size = self.img.size
+            # self.img = self.img.resize((round(previous_size[0]*self.output_size), round(previous_size[1]*self.output_size)))
+        elif isinstance(self.output_size,tuple):
+            self.img = self.img.resize(self.output_size)
+
+        return self.img

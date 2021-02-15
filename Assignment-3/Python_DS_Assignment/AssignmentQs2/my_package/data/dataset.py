@@ -58,22 +58,33 @@ class Dataset(object):
         annotation = json.loads(self.annotation_list[idx])
         imgfile = annotation["img_fn"]
         image = Image.open('./data/'+imgfile)
-        img_array = np.array(image,np.float64)
+        transformed_image = image
+       
+        for transformation in self.transforms:
+            transformed_image = transformation(transformed_image)
 
-        dim = img_array.shape
+        # image.show()
+        # transformed_image.show()
 
-        transformed_image = self.transforms[2](image)
-        image.show()
-        transformed_image.show()
+        img_array = np.array(transformed_image,np.float64)
 
-        # for i in range(dim[0]):
-        #     for j in range(dim[1]):
-        #         for k in range(dim[2]):
-        #             img_array[i,j,k] = img_array[i,j,k]/255.0
+        img_array = img_array/255.0
         
-
-        # print(img_array[0][0])
+        # print(img_array[100][100])
         # print(img_array.shape)
+
+        mydict = { "image":img_array ,"gt_bboxes":[]}
+
+        for box in annotation["bboxes"]:
+            new_bbox = []
+            new_bbox.append(box["category"])
+            for co_ordinate in box["bbox"]:
+                new_bbox.append(co_ordinate)
+            mydict["gt_bboxes"].append(new_bbox)
+
+        # print(mydict["gt_bboxes"])
+
+        return mydict
 
 
 
