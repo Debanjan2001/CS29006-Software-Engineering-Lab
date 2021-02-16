@@ -9,11 +9,13 @@ class Vector:
         # if arg is an int(dimension)
         if isinstance(args[0], int): 
             self._coords = [0]*args[0]
-        else:
+        elif isinstance(args[0],list) or isinstance(args[0],tuple):
             self._coords = []
             user_iterable = args[0]
             for item in user_iterable:
                 self._coords.append(item)
+        else:
+            raise ValueError("Wrong input type passed as a class object. Not a list or tuple ot integer.")
 
     def __len__(self):
         # return the dimension of the vector
@@ -29,6 +31,8 @@ class Vector:
 
     def __add__(self, other):
         # u + v
+        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being added don't have the same dimension." 
+       
         result = []
         for index in range(len(self)):
             result.append(self[index]+other[index])
@@ -37,8 +41,7 @@ class Vector:
             
     def __eq__(self, other):
         # return True if vector has same coordinates as other
-        if len(self)!= len(other):
-            return False
+        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being compared don't have the same dimension." 
         
         for index in range(len(self)):
             if self[index]!=other[index]:
@@ -48,7 +51,12 @@ class Vector:
 
     def __ne__(self, other):
         # return True if vector differs from other
-        return not self==other
+        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being compared don't have the same dimension." 
+        
+        for index in range(len(self)):
+            if self[index]!=other[index]:
+                return True
+        return False
 
 
     def __str__(self):
@@ -64,6 +72,8 @@ class Vector:
 
     def __sub__(self, other):
         # Soln for Qs. 2
+        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being subtracted don't have the same dimension." 
+       
         result = []
         for index in range(len(self)):
             result.append(self[index]-other[index])
@@ -89,24 +99,94 @@ class Vector:
             for index in range(len(self)):
                 result.append(self[index]*other)
 
-        else:
+        elif isinstance(other,Vector):
             for index in range(len(self)):
                 result.append(self[index]*other[index])
+        else:
+            raise ValueError("Invalid Operand Types found during multiplication.")
 
         return result
 
 
     
 def main():
-    v1 = Vector(5)
-    print(v1)
-    # v2 = Vector (7)
-    v3 = Vector([1,2,3,4,5])
-    v4 = Vector([1,2,3,4,5])
-    # print(v4)
-
     # Add suitable print statements to display the results
     # of the different question segments
+    v1 = Vector(5)
+
+    print("*** TEST FOR __str__ ***")
+    print("v1 = {}".format(v1))
+    print()
+
+    print("*** TEST FOR __len__ ***")
+    print("v1 = {}".format(v1))
+    print("Dimension of v1 = {}".format(len(v1)))
+    print()
+
+    print("*** TEST FOR __setitem__ ***")
+    v1[3] = 4
+    print("Set 3rd co-ordinate v1[3]=4. Now,v1 = {}".format(v1))
+    print()
+
+    print("*** TEST FOR __getitem__ ***")
+    print("getting 3rd co-ordinate : {}".format(v1[3]))
+    print()
+
+    print("*** TEST FOR PASSING ITERABLE TO CONSTRUCTOR ***")
+    v1 = Vector([1,2,3,4,5])
+    print("v1 = Vector([1,2,3,4,5])")
+    print("v1 = {}".format(v1))
+    print()
+    
+    print("*** TEST FOR __add__ ***")
+    v2 = Vector([2,2,2,2,2])
+    print("v1 = {}".format(v1))
+    print("v2 = {}".format(v2))
+    print("v1 + v2 = {}".format(v1+v2) )
+    print()
+
+    print("*** TEST FOR __eq__ ***")
+    v2 = Vector([1,2,3,4,5])
+    print("v1 = {}".format(v1))
+    print("v2 = {}".format(v2))
+    print("v1==v2 : {}".format(v1==v2))
+    print()
+
+    print("*** TEST FOR __ne__ ***")
+    print("v1 = {}".format(v1))
+    print("v2 = {}".format(v2))
+    print("v1!=v2 = {}".format(v1!=v2))
+    print()
+
+    print("*** TEST FOR __sub__ ***")
+    v1 = Vector([1,2,3,4,5])
+    v2 = Vector([1,1,1,1,1])
+    print("v1 = {}".format(v1))
+    print("v2 = {}".format(v2))
+    print("v1-v2 = {}".format(v1-v2))
+    print()
+
+    print("*** TEST FOR __neg__ ***")
+    print("v1 = {}".format(v1))
+    print("-v1 = {}".format(-v1))
+    print()
+
+    print("*** TEST FOR __mul__ ***")
+    print("v1 = {}".format(v1))
+    print("v1*3 = {}".format(v1*3))
+    print()
+
+    print("*** TEST FOR __rmul__ ***")
+    print("v1 = {}".format(v1))
+    print("3*v1 = {}".format(3*v1))
+    print()
+
+    print("*** TEST FOR __mul__ ***")
+    print("v1 = {}".format(v1))
+    v2 = Vector([1,0,1,0,1])
+    print("v2 = {}".format(v2))
+    print("v1*v2 = {}".format(v1*v2))
+    print()
 
 
 if __name__ == '__main__':
