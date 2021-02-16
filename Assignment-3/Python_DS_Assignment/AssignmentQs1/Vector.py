@@ -33,9 +33,10 @@ class Vector:
         # u + v
         assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being added don't have the same dimension." 
        
-        result = []
+        result = Vector(len(self))   
+
         for index in range(len(self)):
-            result.append(self[index]+other[index])
+            result[index] = (self[index]+other[index])
 
         return result
             
@@ -74,17 +75,20 @@ class Vector:
         # Soln for Qs. 2
         assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being subtracted don't have the same dimension." 
        
-        result = []
+        result = Vector(len(self))
+
         for index in range(len(self)):
-            result.append(self[index]-other[index])
+            result[index] = (self[index]-other[index])
 
         return result
         
     def __neg__(self):
         # Soln for Qs. 3
-        result = []
+        
+        result = Vector(len(self))
+
         for index in range(len(self)):
-            result.append(self[index]*(-1))
+            result[index] = (self[index]*(-1))
 
         return result
 
@@ -93,15 +97,21 @@ class Vector:
     
     def __mul__(self, other):
         # Soln for Qs. 4, 5 and 6
-        result = []
-
+        
         if isinstance(other,int):
+            result = Vector(len(self))
             for index in range(len(self)):
-                result.append(self[index]*other)
+                result[index]=(self[index]*other)
+
+            return result
 
         elif isinstance(other,Vector):
+            assert (len(self) == len(other)),"Dimension Mismatch.Two vectors being multiplied don't have the same dimension." 
+
+            result = 0
             for index in range(len(self)):
-                result.append(self[index]*other[index])
+                result += (self[index]*other[index])
+            return result
         else:
             raise ValueError("Invalid Operand Types found during multiplication.")
 
@@ -125,7 +135,8 @@ def main():
 
     print("*** TEST FOR __setitem__ ***")
     v1[3] = 4
-    print("Set 3rd co-ordinate v1[3]=4. Now,v1 = {}".format(v1))
+    print("Set 3rd co-ordinate v1[3]=4")
+    print("Now,v1 = {}".format(v1))
     print()
 
     print("*** TEST FOR __getitem__ ***")
@@ -155,7 +166,7 @@ def main():
     print("*** TEST FOR __ne__ ***")
     print("v1 = {}".format(v1))
     print("v2 = {}".format(v2))
-    print("v1!=v2 = {}".format(v1!=v2))
+    print("v1!=v2 : {}".format(v1!=v2))
     print()
 
     print("*** TEST FOR __sub__ ***")
