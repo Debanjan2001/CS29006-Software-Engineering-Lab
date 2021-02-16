@@ -30,10 +30,22 @@ class RescaleImage(object):
 
         # Write your code here
         self.img = image
+        dim = self.img.size
+
         if isinstance(self.output_size,int):
-            previous_size = self.img.size
-            # self.img = self.img.resize((round(previous_size[0]*self.output_size), round(previous_size[1]*self.output_size)))
+
+            if dim[0]<dim[1]:
+                newdim = (dim[0],(dim[1]*self.output_size)/dim[0])
+                self.img.resize( newdim )
+            else:
+                newdim =( (dim[0]*self.output_size)/dim[1],dim[1] )
+                self.img.resize( newdim )
+        
         elif isinstance(self.output_size,tuple):
             self.img = self.img.resize(self.output_size)
+
+        elif isinstance(self.output_size,float):
+            newdim = ( int(self.output_size*dim[0]),int(self.output_size*dim[1]) )
+            self.img = self.img.resize( newdim)
 
         return self.img

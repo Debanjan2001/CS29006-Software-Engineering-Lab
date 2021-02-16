@@ -1,7 +1,8 @@
 #Imports
-from PIL import Image,ImageDraw,ImageFont
+from PIL import Image,ImageDraw
 import numpy as np
-def plot_boxes(prediction_boxes,prediction_class,image): # Write the required arguments
+
+def plot_boxes(prediction_data,image): # Write the required arguments
 
     # The function should plot the predicted boxes on the images and save them.
     # Tip: keep the dimensions of the output image less than 800 to avoid RAM crashes.
@@ -11,8 +12,12 @@ def plot_boxes(prediction_boxes,prediction_class,image): # Write the required ar
     img = Image.fromarray(image)
     draw = ImageDraw.Draw(img)
 
-    for i in range(min(5,len(prediction_boxes))):
-        box = prediction_boxes[i]
-        draw.rectangle(box,outline="rgb(0, 255, 0)",width = 2)
+    pred_boxes = prediction_data[0]
+    pred_class = prediction_data[1]
+
+    for i in range(min(5,len(pred_boxes))):
+        box = pred_boxes[i]
+        draw.rectangle(box,outline="rgb(0, 255, 0)",width = 3)
+        draw.text(box[0],pred_class[i],fill="rgb(255,0,0)")
 
     return img
