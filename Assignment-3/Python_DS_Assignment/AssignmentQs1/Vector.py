@@ -15,7 +15,7 @@ class Vector:
             for item in user_iterable:
                 self._coords.append(item)
         else:
-            raise ValueError("Wrong input type passed as a class object. Not a list or tuple ot integer.")
+            raise Exception("Wrong data type passed to class constructor. Not a list or tuple ot integer.")
 
     def __len__(self):
         # return the dimension of the vector
@@ -31,8 +31,9 @@ class Vector:
 
     def __add__(self, other):
         # u + v
-        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being added don't have the same dimension." 
-       
+        if len(self)!=len(other):
+                raise Exception("Dimension Mismatch.Two vectors being added don't have the same dimension.")
+
         result = Vector(len(self))   
 
         for index in range(len(self)):
@@ -42,8 +43,9 @@ class Vector:
             
     def __eq__(self, other):
         # return True if vector has same coordinates as other
-        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being compared don't have the same dimension." 
-        
+        if len(self)!=len(other):
+                raise Exception("Dimension Mismatch.Two vectors being compared don't have the same dimension.")
+
         for index in range(len(self)):
             if self[index]!=other[index]:
                 return False
@@ -52,8 +54,9 @@ class Vector:
 
     def __ne__(self, other):
         # return True if vector differs from other
-        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being compared don't have the same dimension." 
-        
+        if len(self)!=len(other):
+                raise Exception("Dimension Mismatch.Two vectors being compared don't have the same dimension.")
+
         for index in range(len(self)):
             if self[index]!=other[index]:
                 return True
@@ -73,8 +76,9 @@ class Vector:
 
     def __sub__(self, other):
         # Soln for Qs. 2
-        assert (len(self)== len(other)),"Dimension Mismatch.Two vectors being subtracted don't have the same dimension." 
-       
+        if len(self)!=len(other):
+                raise Exception("Dimension Mismatch.Two vectors being subtracted don't have the same dimension.")
+
         result = Vector(len(self))
 
         for index in range(len(self)):
@@ -106,16 +110,14 @@ class Vector:
             return result
 
         elif isinstance(other,Vector):
-            assert (len(self) == len(other)),"Dimension Mismatch.Two vectors being multiplied don't have the same dimension." 
-
+            if len(self)!=len(other):
+                raise Exception("Dimension Mismatch.Two vectors being multiplied don't have the same dimension.")
             result = 0
             for index in range(len(self)):
                 result += (self[index]*other[index])
             return result
         else:
-            raise ValueError("Invalid Operand Types found during multiplication.")
-
-        return result
+            raise Exception("Invalid Operand Types found during multiplication.")
 
 
     
@@ -157,7 +159,7 @@ def main():
     print()
 
     print("*** TEST FOR __eq__ ***")
-    v2 = Vector([1,2,3,4,5])
+    v2 = Vector((1,2,3,4,6))
     print("v1 = {}".format(v1))
     print("v2 = {}".format(v2))
     print("v1==v2 : {}".format(v1==v2))
@@ -189,7 +191,7 @@ def main():
 
     print("*** TEST FOR __rmul__ ***")
     print("v1 = {}".format(v1))
-    print("3*v1 = {}".format(3*v1))
+    print("4*v1 = {}".format(4*v1))
     print()
 
     print("*** TEST FOR __mul__ ***")
